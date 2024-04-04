@@ -5,7 +5,7 @@ import random
 class Janela:
 
     def __init__(self, toplevel): 
-        
+        #CONFIGURAÇÃO DA PÁGINA PRINCIPAL
         toplevel.title("Empresa de Turismo")
         toplevel.geometry("900x600")
         toplevel.configure(bg="#6cbd74")
@@ -20,7 +20,7 @@ class Janela:
         #BOTÃO DE LOGIN
         self.botaoLogin = Button(self.fr1)
         self.botaoLogin['background'] = "#546353"
-        self.botaoLogin['foreground'] = "#546353"
+        #self.botaoLogin['foreground'] = "#546353"
         self.botaoLogin['font'] = ('Verdana', '12')
         self.botaoLogin['text'] = "Login"
         self.botaoLogin.bind("<Button-1>", self.muda_cor)
@@ -30,7 +30,19 @@ class Janela:
         self.barraPesquisa = Entry(self.fr1)
         self.barraPesquisa['background'] = "#ffffff"
         self.barraPesquisa['text'] = "Oii To aqui"
-        self.barraPesquisa.pack(side='top', anchor='center')
+        self.barraPesquisa.pack(side='right')
+
+        #BOTÃO VOLTAR
+        self.botaoVoltar = Button(self.fr1)
+        self.botaoVoltar['background'] = "#546353"
+        self.botaoVoltar['font'] = ('Verdana', '12')
+        self.botaoVoltar['text'] = "Voltar"
+        #self.botaoVoltar.bind("<Button-1>", self.voltar)
+        self.botaoVoltar.pack(side = 'left', anchor='center')
+
+
+        
+
 
     def muda_cor(self, event):
         self.botaoLogin['background'] = 'yellow'
@@ -39,12 +51,5 @@ class Janela:
 root = tkk.Tk()
 Janela(root)
 root.mainloop()
-#
-#label = tkk.Label(
-#    text="Hello, Matheus",
-#    foreground="white",  # Set the text color to white
-#    background="black",  # Set the background color to black
-#    font='verdana'
-#)
-#label.pack()
+
 
