@@ -2,6 +2,7 @@ import tkinter as tkk
 from tkinter import *
 from PIL import ImageTk, Image
 import random
+import pandas as pd
 
 class Janela:
 
@@ -21,11 +22,9 @@ class Janela:
         #BOTÃO DE LOGIN
         self.botaoLogin = Button(self.fr1)
         self.botaoLogin['background'] = "#546353"
-        #self.botaoLogin['foreground'] = "#546353"
         self.botaoLogin['font'] = ('Verdana', '12')
         self.botaoLogin['text'] = "Login"
         self.botaoLogin.bind("<Button-1>", self.muda_cor)
-        #self.botaoLogin.grid(column=2, row=0)
         self.botaoLogin.pack(side= 'right')
         
 
@@ -36,7 +35,6 @@ class Janela:
         self.botaoVoltar['text'] = "Voltar"
         #self.botaoVoltar.bind("<Button-1>", self.voltar)
         self.botaoVoltar.pack(side = 'left', anchor='center')
-        #self.botaoVoltar.grid(column=0, row=0)
 
 
         #BARRA DE PESQUISA
@@ -45,11 +43,7 @@ class Janela:
         self.barraPesquisa['width'] = 40
         self.barraPesquisa['fg'] = 'black'
         self.barraPesquisa['justify'] = 'center'
-        self.barraPesquisa['textvariable'] = "Pesquise uma rota ou local turistico"
         self.barraPesquisa.pack(side='top', pady=10)
-        #self.barraPesquisa.grid(column=1, row=0)
-
-
 
 
         #CONTAINER QUE CONTERÁ A LISTAGEM DE ATRAÇÕES TURISTICAS
@@ -59,52 +53,49 @@ class Janela:
         self.frameListagemAtracoes['width'] = 550
         self.frameListagemAtracoes.pack(side = 'top', fill = "y", pady=30)
 
-        # ATRAÇÃO 1
-        self.Atracao1 = Frame(self.frameListagemAtracoes)
-        self.Atracao1['background'] = "gray"
-        self.Atracao1['height'] = 100
-        self.Atracao1.pack(side='top', fill='y')
+        scroll_bar = Scrollbar(self.frameListagemAtracoes) 
+        scroll_bar.pack(side= 'right', fill='y')
 
-        self.ReferenciaImgAtracao = ImageTk.PhotoImage(Image.open("APS/view/imgs/tiradentes.jpg").resize((200, 100)))
-        self.imgAtracao1 = Label(self.Atracao1, image=self.ReferenciaImgAtracao, width = 200, height=100)
-        self.imgAtracao1.image = self.ReferenciaImgAtracao
-        self.imgAtracao1.grid(column=0, row = 0)
+        infoCidades = pd.read_csv("APS/bancoDeDados/atracaoTuristica.csv", sep=';')
         
-        self.txtAtracao1 = Label(self.Atracao1, wraplength=200)
-        self.txtAtracao1['width'] = 50
-        self.txtAtracao1['text'] = "A rota turistica de Tiradentes é lembrada pela itensa aproximação histórica entre o viajante e a paisagem...."
-        self.txtAtracao1['bg'] = "yellow"
-        self.txtAtracao1.grid(column=1, row = 0)
 
-        #ATRACAO TURISTICA 2
-        self.Atracao2 = Frame(self.frameListagemAtracoes)
-        self.Atracao2['background'] = "gray"
-        self.Atracao2['height'] = 100
-        self.Atracao2.pack(side='top', fill='y')
+        self.Atracaoes = []
+        self.ReferenciaImgAtracoes = [] 
+        self.imgAtracoes = []
+        self.campoAtracoes = []
+        self.botaoAtracoes = []
+        self.txtAtracoes = []
 
-        self.ReferenciaImgAtracao2 = ImageTk.PhotoImage(Image.open("APS/view/imgs/saopaulo.jpg").resize((200, 100)))
-        self.imgAtracao2 = Label(self.Atracao2, image=self.ReferenciaImgAtracao2, width = 200, height=100)
-        self.imgAtracao2.image = self.ReferenciaImgAtracao
-        self.imgAtracao2.grid(column=0, row = 0)
+        for i, row in enumerate(infoCidades.itertuples(index=False)): 
+            self.Atracaoes.append(Frame(self.frameListagemAtracoes))
+            self.Atracaoes[i]['background'] = "gray"
+            self.Atracaoes[i]['height'] = 100
+            self.Atracaoes[i].pack(side='top', fill='y')
 
-        
-        self.txtAtracao2 = Label(self.Atracao2, wraplength=200)
-        self.txtAtracao2['width'] = 50
-        self.txtAtracao2['text'] = "A rota turistica de São Paulo permite uma imersão no ambiente cosmopolita da sociedade pós industrial nazicapitalista"
-        self.txtAtracao2['bg'] = "yellow"
-        self.txtAtracao2.grid(column=1, row = 0)
+            #imagem da atração
+            self.ReferenciaImgAtracoes.append(ImageTk.PhotoImage(Image.open("APS/view/imgs/tiradentes.jpg").resize((200, 100))))
+            self.imgAtracoes.append(Label(self.Atracaoes[i], image=self.ReferenciaImgAtracoes[i], width=200, height=100))
+            self.imgAtracoes[i].image = self.ReferenciaImgAtracoes[i]
+            self.imgAtracoes[i].grid(column=0, row=0)
 
+            #container para adicionar o botao e o texto, ao lado da imagem
+            self.campoAtracoes.append(Frame(self.Atracaoes[i]))
+            self.campoAtracoes[i].grid(column=1, row=0)
 
+            #botao 'conheca tal lugar' para redirecionar a pagina
+            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row.nomeCidade}'))
+            self.botaoAtracoes[i].pack(side='top')
 
+            #breve descrição da atracao turistica
+            self.txtAtracoes.append(Label(self.campoAtracoes[i], wraplength=200, width=50, text=f"{row.descricao}", bg="yellow"))
+            self.txtAtracoes[i].pack()  
+
+        #scroll_bar.config(command=self.frameListagemAtracoes.yview)
+        #self.frameListagemAtracoes.config(yscrollcommand=scroll_bar.set)
 
     def muda_cor(self, event):
         self.botaoLogin['background'] = 'yellow'
 
-
-
-
 root = tkk.Tk()
 Janela(root)
 root.mainloop()
-
-
