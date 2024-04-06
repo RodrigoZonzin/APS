@@ -65,7 +65,7 @@ class Janela:
         self.Atracao1['height'] = 100
         self.Atracao1.pack(side='top', fill='y')
 
-        self.ReferenciaImgAtracao = ImageTk.PhotoImage(Image.open("APS/view/imgs/tiradentes.jpg").resize((200, 100)))
+        self.ReferenciaImgAtracao = ImageTk.PhotoImage(Image.open("./view/imgs/tiradentes.jpg").resize((200, 100)))
         self.imgAtracao1 = Label(self.Atracao1, image=self.ReferenciaImgAtracao, width = 200, height=100)
         self.imgAtracao1.image = self.ReferenciaImgAtracao
         self.imgAtracao1.grid(column=0, row = 0)
@@ -82,7 +82,7 @@ class Janela:
         self.Atracao2['height'] = 100
         self.Atracao2.pack(side='top', fill='y')
 
-        self.ReferenciaImgAtracao2 = ImageTk.PhotoImage(Image.open("APS/view/imgs/saopaulo.jpg").resize((200, 100)))
+        self.ReferenciaImgAtracao2 = ImageTk.PhotoImage(Image.open("./view/imgs/saopaulo.jpg").resize((200, 100)))
         self.imgAtracao2 = Label(self.Atracao2, image=self.ReferenciaImgAtracao2, width = 200, height=100)
         self.imgAtracao2.image = self.ReferenciaImgAtracao
         self.imgAtracao2.grid(column=0, row = 0)
