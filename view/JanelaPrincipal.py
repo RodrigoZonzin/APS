@@ -56,7 +56,8 @@ class Janela:
         scroll_bar = Scrollbar(self.frameListagemAtracoes) 
         scroll_bar.pack(side= 'right', fill='y')
 
-        infoCidades = pd.read_csv("APS/bancoDeDados/atracaoTuristica.csv", sep=';')
+        #infoCidades = pd.read_csv("APS/bancoDeDados/atracaoTuristica.csv", sep=';')
+        infoCidades = pd.read_json('APS/banco.json');
         
 
         self.Atracaoes = []
@@ -66,26 +67,32 @@ class Janela:
         self.botaoAtracoes = []
         self.txtAtracoes = []
 
-        for i, row in enumerate(infoCidades.itertuples(index=False)): 
+        for i, row in enumerate(infoCidades.itertuples()): 
             self.Atracaoes.append(Frame(self.frameListagemAtracoes))
             self.Atracaoes[i]['background'] = "gray"
             self.Atracaoes[i]['height'] = 100
             self.Atracaoes[i].pack(side='top', fill='y')
 
-        self.ReferenciaImgAtracao2 = ImageTk.PhotoImage(Image.open("APS/view/imgs/saopaulo.jpg").resize((200, 100)))
-        self.imgAtracao2 = Label(self.Atracao2, image=self.ReferenciaImgAtracao2, width = 200, height=100)
-        self.imgAtracao2.image = self.ReferenciaImgAtracao
-        self.imgAtracao2.grid(column=0, row = 0)
+            #imagem da atração
+            self.ReferenciaImgAtracoes.append(ImageTk.PhotoImage(Image.open("APS/view/imgs/tiradentes.jpg").resize((200, 100))))
+            self.imgAtracoes.append(Label(self.Atracaoes[i], image=self.ReferenciaImgAtracoes[i], width=200, height=100))
+            self.imgAtracoes[i].image = self.ReferenciaImgAtracoes[i]
+            self.imgAtracoes[i].grid(column=0, row=0)
 
-        
-        self.txtAtracao2 = Label(self.Atracao2, wraplength=200)
-        self.txtAtracao2['width'] = 50
-        self.txtAtracao2['text'] = "A rota turistica de São Paulo permite uma imersão no ambiente cosmopolita da sociedade pós industrial nazicapitalista"
-        self.txtAtracao2['bg'] = "yellow"
-        self.txtAtracao2.grid(column=1, row = 0)
+            #container para adicionar o botao e o texto, ao lado da imagem
+            self.campoAtracoes.append(Frame(self.Atracaoes[i]))
+            self.campoAtracoes[i].grid(column=1, row=0)
 
+            #botao 'conheca tal lugar' para redirecionar a pagina
+            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row.Nome}'))
+            self.botaoAtracoes[i].pack(side='top')
 
+            #breve descrição da atracao turistica
+            self.txtAtracoes.append(Label(self.campoAtracoes[i], wraplength=200, width=50, text=f"{row.Descricao}", bg="yellow"))
+            self.txtAtracoes[i].pack()  
 
+        #scroll_bar.config(command=self.frameListagemAtracoes.yview)
+        #self.frameListagemAtracoes.config(yscrollcommand=scroll_bar.set)
 
     def muda_cor(self, event):
         self.botaoLogin['background'] = 'yellow'
