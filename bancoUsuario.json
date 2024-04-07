@@ -1,0 +1,32 @@
+[
+    {
+        "Nome": "Joao Silva",
+        "Login": "joao123",
+        "Senha": "senha123",
+        "isAdmin": false
+    },
+    {
+        "Nome": "Maria Souza",
+        "Login": "maria456",
+        "Senha": "abc123",
+        "isAdmin": true
+    },
+    {
+        "Nome": "Pedro Santos",
+        "Login": "pedro789",
+        "Senha": "123456",
+        "isAdmin": false
+    },
+    {
+        "Nome": "Elias",
+        "Login": "eliasmnds",
+        "Senha": "mnds123",
+        "isAdmin": false
+    },
+    {
+        "Nome": "Giovana",
+        "Login": "Gio123",
+        "Senha": "123gio",
+        "isAdmin": false
+    }
+]

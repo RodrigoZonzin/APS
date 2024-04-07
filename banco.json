@@ -1,0 +1,26 @@
+[
+    {
+        "ID": 1,
+        "Nome": "Igreja de Sao Francisco de Assis",
+        "Endereco": "Largo Sao Francisco, Sao Joao del Rei, Minas Gerais, Brazil",
+        "Descricao": "Uma das mais belas igrejas barrocas do Brasil, com destaque para sua arquitetura imponente e detalhes decorativos."
+    },
+    {
+        "ID": 2,
+        "Nome": "Igreja de Nossa Senhora do Rosario",
+        "Endereco": "Rua Getulio Vargas, Sao Joao del Rei, Minas Gerais, Brazil",
+        "Descricao": "Igreja catolica colonial com interior ricamente decorado, destacando-se pelos belos paineis de azulejos portugueses."
+    },
+    {
+        "ID": 3,
+        "Nome": "Trem Maria Fumaca",
+        "Endereco": "Rua Hermilio Alves, Sao Joao del Rei, Minas Gerais, Brazil",
+        "Descricao": "Um passeio de trem historico que percorre a rota entre Sao Joao del Rei e Tiradentes, proporcionando uma experiencia nostalgica pelas paisagens historicas de Minas Gerais."
+    },
+    {
+        "ID": 4,
+        "Nome": "Museu Ferroviario de Sao Joao del Rei",
+        "Endereco": "Praca Estevam Marinho, Sao Joao del Rei, Minas Gerais, Brazil",
+        "Descricao": "Um museu dedicado a historia ferroviaria da regiao, com exposi\u00e7oes de locomotivas antigas, equipamentos e objetos relacionados a ferrovia."
+    }
+]
