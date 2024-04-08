@@ -72,11 +72,17 @@ def gravarUsuario(user : Usuario):
         listObj = json.load(fp)
 
     #Define-se os novos dados
-    novoUsuario = {
+    """novoUsuario = {
         "Nome": user.get_nome(),
         "Login": user.get_login(),
         "Senha": user.get_senha(),
         "isAdmin": user.get_isAdmin()
+        }"""
+    
+    novoUsuario = {
+        "Nome": user.nome,
+        "Login": user.login,
+        "Senha": user.senha,
         }
     
     #Adiciona os novos dados da lista de objetos JSON

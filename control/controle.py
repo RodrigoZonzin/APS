@@ -2,7 +2,7 @@
 #seja processar cálculos, combinar dados para estatísticas, 
 #ou solicitar que a persistência recupere ou grave dados.
 from modelo import *
-from persistencia import *
+from persistencia.persistencia import *
 
 class LocalTuristicoController:
     def __init__(self):

@@ -3,18 +3,20 @@ from tkinter import *
 from PIL import ImageTk, Image
 import random
 import pandas as pd
+from control.controle2 import *
 
 class Janela:
 
-    def __init__(self, toplevel): 
+    def __init__(self): 
+        root = tkk.Tk()
         #CONFIGURAÇÃO DA PÁGINA PRINCIPAL
-        toplevel.title("Empresa de Turismo")
-        toplevel.geometry("900x600")
-        toplevel.configure(bg="#6cbd74")
+        root.title("Empresa de Turismo")
+        root.geometry("900x600")
+        root.configure(bg="#6cbd74")
 
 
         #CONTAINER QUE CONTERÁ A BARRA DE PESQUISA E O BOTÃO DE LOGIN
-        self.fr1 = Frame(toplevel)
+        self.fr1 = Frame(root)
         self.fr1['background'] = "#316b2d"
         self.fr1['height'] = 140
         self.fr1.pack(side="top", fill = "x")
@@ -47,7 +49,7 @@ class Janela:
 
 
         #CONTAINER QUE CONTERÁ A LISTAGEM DE ATRAÇÕES TURISTICAS
-        self.frameListagemAtracoes = Frame(toplevel)
+        self.frameListagemAtracoes = Frame(root)
         self.frameListagemAtracoes['background'] = "#44404a"
         #self.frameListagemAtracoes['height'] = 500
         self.frameListagemAtracoes['width'] = 550
@@ -57,7 +59,7 @@ class Janela:
         scroll_bar.pack(side= 'right', fill='y')
 
         #infoCidades = pd.read_csv("APS/bancoDeDados/atracaoTuristica.csv", sep=';')
-        infoCidades = pd.read_json('APS/banco.json');
+        infoCidades = pd.read_json('./banco.json');
         
 
         self.Atracaoes = []
@@ -74,7 +76,7 @@ class Janela:
             self.Atracaoes[i].pack(side='top', fill='y')
 
             #imagem da atração
-            self.ReferenciaImgAtracoes.append(ImageTk.PhotoImage(Image.open("APS/view/imgs/tiradentes.jpg").resize((200, 100))))
+            self.ReferenciaImgAtracoes.append(ImageTk.PhotoImage(Image.open("./view/imgs/tiradentes.jpg").resize((200, 100))))
             self.imgAtracoes.append(Label(self.Atracaoes[i], image=self.ReferenciaImgAtracoes[i], width=200, height=100))
             self.imgAtracoes[i].image = self.ReferenciaImgAtracoes[i]
             self.imgAtracoes[i].grid(column=0, row=0)
@@ -93,10 +95,7 @@ class Janela:
 
         #scroll_bar.config(command=self.frameListagemAtracoes.yview)
         #self.frameListagemAtracoes.config(yscrollcommand=scroll_bar.set)
+        root.mainloop()
 
     def muda_cor(self, event):
         self.botaoLogin['background'] = 'yellow'
-
-root = tkk.Tk()
-Janela(root)
-root.mainloop()

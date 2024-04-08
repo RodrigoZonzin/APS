@@ -1,7 +1,7 @@
 #contém as classes que implementam a interface gráfica com o usuário. 
 #Essas classes só podem apresentar e obter dados de e para os usuários, 
 #mas não são elas que executam os casos de uso do software;
-from controle import *
+from control.controle import *
 from modelo import *
 
 controladorLocalTuristico = LocalTuristicoController()
