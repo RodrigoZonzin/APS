@@ -1,11 +1,11 @@
 import pandas as pd
-import model.UsuarioAdm
+import model.UsuarioNormal
 
 
 class PersistenciaUsuario():
 
     def __init__(self, usuario):
-        self.nomeArquivo = 'ArquivoPersistenciaUsuarioAdmin.csv'
+        self.nomeArquivo = 'ArquivoPersistenciaUsuarioNormal.csv'
 
     def criaArquivoPersistencia(self):
         self.arq_persistencia = pd.DataFrame(columns = ['id', 'nome', 'login', 'senha', 'isAdmin'])
@@ -42,6 +42,3 @@ class PersistenciaUsuario():
         #problema se retornar None
         #deve ser resolvido quando houver tempo
         return self.df_persistencia.iloc[self.df_persistencia['id'] == id]
-
-
-
