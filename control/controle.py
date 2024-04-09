@@ -13,7 +13,7 @@ class LocalTuristicoController:
     def __init__(self):
         pass
 
-    def adicionarLocalTuristico(self, id, nome, endereco, descricao):
+    def adicionarLocalTuristico(id, nome, endereco, descricao):
         localT = lc.LocalTuristico(id, nome, endereco, descricao)
         gravarLocalTuristico(localT)
         

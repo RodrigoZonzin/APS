@@ -4,27 +4,27 @@ from PIL import ImageTk, Image
 import random
 import pandas as pd
 from control import controle as ct
+from . import JanelaLogin as jl
 
 controladorLocalTuristico = ct.LocalTuristicoController()
 controladorUsuario = ct.UsuarioController()
 
-from . import JanelaLogin as jl
 
 class Janela:
 
     def __init__(self): 
-        root = tkk.Tk()
+        self.root = tkk.Tk()
 
         #print(controladorLocalTuristico.buscarLocalTuristicoID(1).nome)
 
         #CONFIGURAÇÃO DA PÁGINA PRINCIPAL
-        root.title("Empresa de Turismo")
-        root.geometry("900x600")
-        root.configure(bg="#6cbd74")
+        self.root.title("Empresa de Turismo")
+        self.root.geometry("900x600")
+        self.root.configure(bg="#6cbd74")
 
 
         #CONTAINER QUE CONTERÁ A BARRA DE PESQUISA E O BOTÃO DE LOGIN
-        self.fr1 = Frame(root)
+        self.fr1 = Frame(self.root)
         self.fr1['background'] = "#316b2d"
         self.fr1['height'] = 140
         self.fr1.pack(side="top", fill = "x")
@@ -57,18 +57,18 @@ class Janela:
 
 
         #CONTAINER QUE CONTERÁ A LISTAGEM DE ATRAÇÕES TURISTICAS
-        self.frameListagemAtracoes = Frame(root)
+        self.frameListagemAtracoes = Frame(self.root)
         self.frameListagemAtracoes['background'] = "#44404a"
         self.frameListagemAtracoes['width'] = 550
         self.frameListagemAtracoes.pack(side = 'top', fill = "y", pady=30)
 
         #BARRA DE DESCIDA DA PÁGINA
         #NAO ESTÁ FUNCIONANDO
-        scroll_bar = Scrollbar(self.frameListagemAtracoes, orient='vertical', command=self.frameListagemAtracoes.yview) 
-        scroll_bar.pack(side= 'right', fill='y')
+        #scroll_bar = Scrollbar(self.frameListagemAtracoes, orient='vertical', command=self.frameListagemAtracoes.yview) 
+        #scroll_bar.pack(side= 'right', fill='y')
 
-        self.frameListagemAtracoes.configure(yscrollcommand=scroll_bar.set)
-        self.frameListagemAtracoes.bind('<Configure>', lambda e: self.frameListagemAtracoes.configure(scrollregion= self.frameListagemAtracoes.bbox('all')))
+        #self.frameListagemAtracoes.configure(yscrollcommand=scroll_bar.set)
+        #self.frameListagemAtracoes.bind('<Configure>', lambda e: self.frameListagemAtracoes.configure(scrollregion= self.frameListagemAtracoes.bbox('all')))
 
 
 
@@ -107,12 +107,38 @@ class Janela:
             self.txtAtracoes.append(Label(self.campoAtracoes[i], wraplength=200, width=50, text=f"{row.Descricao}", bg="yellow"))
             self.txtAtracoes[i].pack()  
 
-        self.fButtun = Frame(root)
-        Button(self.fButtun, text='Registar Local')
+        self.fButtun = Frame(self.root).pack(side='top')
+        Button(self.fButtun, text='Registar Local', command=self.insercaoTL).pack(side='top')
 
         #scroll_bar.config(command=self.frameListagemAtracoes.yview)
         #self.frameListagemAtracoes.config(yscrollcommand=scroll_bar.set)
-        root.mainloop()
+        self.root.mainloop()
 
     def chama_telaLogin(self, event):
         jl.JanelaLogin()
+
+    def insercaoTL(self):
+        self.telaInserc = Toplevel(self.root)
+        self.telaInserc.title('Inserir Local Turístico')
+        self.telaInserc.geometry('300x250')
+
+        frame1 = Frame(self.telaInserc)
+        frame1.pack()
+
+        Label(frame1, text='ID').pack()
+        self.idLc = Entry(frame1)
+        self.idLc.pack()
+        Label(frame1, text='Nome').pack()
+        self.nomeLc = Entry(frame1)
+        self.nomeLc.pack()
+        Label(frame1, text='Endereço').pack()
+        self.endLc = Entry(frame1)
+        self.endLc.pack()
+        Label(frame1, text='Descrição').pack()
+        self.descLc = Entry(frame1)
+        self.descLc.pack()
+
+        Button(frame1, text='Enviar', command=lambda: (self.enviarInserirLc(), self.telaInserc.destroy())).pack()
+
+    def enviarInserirLc(self):
+        ct.LocalTuristicoController.adicionarLocalTuristico(self.idLc.get(), self.nomeLc.get(), self.endLc.get(), self.descLc.get())

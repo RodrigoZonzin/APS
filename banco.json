@@ -26,7 +26,13 @@
     {
         "ID": 5,
         "Nome": "CTAN",
-        "Endereco": "Rua dos Gado, 666, São João del Tei, Minas Gerais, BRasil",
-        "Descricao": "Que Deus tenha misericórdia dessa nação."
+        "Endereco": "Rua dos Gado, 666, S\u00c3\u00a3o Jo\u00c3\u00a3o del Tei, Minas Gerais, BRasil",
+        "Descricao": "Que Deus tenha miseric\u00c3\u00b3rdia dessa na\u00c3\u00a7\u00c3\u00a3o."
+    },
+    {
+        "ID": "6",
+        "Nome": "abc",
+        "Endereco": "abc",
+        "Descricao": "abc"
     }
 ]
