@@ -1,4 +1,4 @@
-from . import Usuario as u
+from . import UsuarioNormal as u
 
 class UsuarioNormal(u.Usuario):
     def alterarSuasInfos(self):
