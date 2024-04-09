@@ -4,18 +4,29 @@
 from modelo import *
 from persistencia.persistencia import *
 
+from model import UsuarioNormal as un
+#from model import UsuarioAdm as ua
+from model import LocalTuristico as lc
+#from persistencia import persistencia as pers
+
 class LocalTuristicoController:
     def __init__(self):
         pass
 
-    def adicionarLocalTuristico(self, LocalTuristicoX):
-        gravarLocalTuristico(LocalTuristicoX)
+    def adicionarLocalTuristico(self, id, nome, endereco, descricao):
+        localT = lc.LocalTuristico(id, nome, endereco, descricao)
+        gravarLocalTuristico(localT)
+        
+        return localT
 
     def buscarLocalTuristicoID(self, id_local):
-        return showLocalTuristico(id_local)
+        local = showLocalTuristico(id_local)
+        local = lc.LocalTuristico(local['ID'], local['Nome'], local['Endereco'], local['Descricao'])
+       
+        return local
     
-    def buscarLocalTuristicoNome(self, nome):
-        pass
+    #def buscarLocalTuristicoNome(self, nome):
+    #    pass
     
     def apagarLocalTuristico(self, id_local):
         deletarLocalTuristico(id_local)

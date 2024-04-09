@@ -8,7 +8,7 @@ from modelo import *
 def gravarLocalTuristico(LT : Turismo):
 
     #Define o caminho do 'banco' e cria uma lista para receber os objetos JSON
-    filename = 'src/banco.json'
+    filename = './banco.json'
     listObj = []
 
     #Abre o arquivo e armazena os objetos JSON dentro da lista
@@ -17,10 +17,10 @@ def gravarLocalTuristico(LT : Turismo):
 
     #Define-se os novos dados
     novoLocalTuristico = {
-        "ID": LT.get_ID(),
-        "Nome": LT.get_nome(),
-        "Endereco": LT.get_endereco(),
-        "Descricao": LT.get_descricao()
+        "ID": LT.id,
+        "Nome": LT.nome,
+        "Endereco": LT.endereco,
+        "Descricao": LT.descricao
         }
     
     #Adiciona os novos dados da lista de objetos JSON
@@ -35,7 +35,7 @@ def gravarLocalTuristico(LT : Turismo):
 
 def showLocalTuristico(id_local):
      # Carregar os dados do arquivo JSON
-    with open("src/banco.json", "r") as arquivo:
+    with open("./banco.json", "r") as arquivo:
         locais_turisticos = json.load(arquivo)
 
     # Buscar o local turístico pelo ID

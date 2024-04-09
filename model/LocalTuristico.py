@@ -1,8 +1,10 @@
-from Turismo import Turismo
+from . import Turismo as t
 
-class LocalTuristico(Turismo):
-    def alterarInfos(self):
-        return
+class LocalTuristico(t.Turismo):
+    def alterarInfos(self, nome, endereco, descricao):
+        self.nome = nome
+        self.endereco = endereco
+        self.descricao = descricao
     
     def apagar(self):
         return

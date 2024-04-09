@@ -3,12 +3,18 @@ from tkinter import *
 from PIL import ImageTk, Image
 import random
 import pandas as pd
-from control.controle2 import *
+from control import controle as ct
+
+controladorLocalTuristico = ct.LocalTuristicoController()
+controladorUsuario = ct.UsuarioController()
 
 class Janela:
 
     def __init__(self): 
         root = tkk.Tk()
+
+        #print(controladorLocalTuristico.buscarLocalTuristicoID(1).nome)
+
         #CONFIGURAÇÃO DA PÁGINA PRINCIPAL
         root.title("Empresa de Turismo")
         root.geometry("900x600")
@@ -55,8 +61,9 @@ class Janela:
         self.frameListagemAtracoes['width'] = 550
         self.frameListagemAtracoes.pack(side = 'top', fill = "y", pady=30)
 
-        scroll_bar = Scrollbar(self.frameListagemAtracoes) 
+        scroll_bar = Scrollbar(self.frameListagemAtracoes, orient='vertical', command=self.frameListagemAtracoes) 
         scroll_bar.pack(side= 'right', fill='y')
+
 
         #infoCidades = pd.read_csv("APS/bancoDeDados/atracaoTuristica.csv", sep=';')
         infoCidades = pd.read_json('./banco.json');
@@ -76,7 +83,7 @@ class Janela:
             self.Atracaoes[i].pack(side='top', fill='y')
 
             #imagem da atração
-            self.ReferenciaImgAtracoes.append(ImageTk.PhotoImage(Image.open("./view/imgs/tiradentes.jpg").resize((200, 100))))
+            self.ReferenciaImgAtracoes.append(ImageTk.PhotoImage(Image.open("./view/imgs/img_id1.jpg").resize((200, 100))))
             self.imgAtracoes.append(Label(self.Atracaoes[i], image=self.ReferenciaImgAtracoes[i], width=200, height=100))
             self.imgAtracoes[i].image = self.ReferenciaImgAtracoes[i]
             self.imgAtracoes[i].grid(column=0, row=0)
@@ -92,6 +99,9 @@ class Janela:
             #breve descrição da atracao turistica
             self.txtAtracoes.append(Label(self.campoAtracoes[i], wraplength=200, width=50, text=f"{row.Descricao}", bg="yellow"))
             self.txtAtracoes[i].pack()  
+
+        self.fButtun = Frame(root)
+        Button(self.fButtun, text='Registar Local')
 
         #scroll_bar.config(command=self.frameListagemAtracoes.yview)
         #self.frameListagemAtracoes.config(yscrollcommand=scroll_bar.set)

@@ -22,5 +22,11 @@
         "Nome": "Museu Ferroviario de Sao Joao del Rei",
         "Endereco": "Praca Estevam Marinho, Sao Joao del Rei, Minas Gerais, Brazil",
         "Descricao": "Um museu dedicado a historia ferroviaria da regiao, com exposi\u00e7oes de locomotivas antigas, equipamentos e objetos relacionados a ferrovia."
+    },
+    {
+        "ID": 5,
+        "Nome": "CTAN",
+        "Endereco": "Rua dos Gado, 666, São João del Tei, Minas Gerais, BRasil",
+        "Descricao": "Que Deus tenha misericórdia dessa nação."
     }
 ]
