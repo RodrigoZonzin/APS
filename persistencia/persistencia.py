@@ -33,8 +33,8 @@ def gravarLocalTuristico(LT : Turismo):
                             indent=4,
                             separators=(',',': '))
 
-def showLocalTuristico(id_local):
-     # Carregar os dados do arquivo JSON
+def showLocalTuristicoId(id_local):
+    # Carregar os dados do arquivo JSON
     with open("./banco.json", "r") as arquivo:
         locais_turisticos = json.load(arquivo)
 
@@ -44,6 +44,20 @@ def showLocalTuristico(id_local):
             return local
     
     # Se o ID não for encontrado, retorna None
+    return None
+
+def showLocalTuristicoNome(nome_local):
+     # Carregar os dados do arquivo JSON
+    with open("./banco.json", "r") as arquivo:
+        locais_turisticos = json.load(arquivo)
+
+    # Buscar o local turístico pelo ID
+    for local in locais_turisticos:
+        print(str(local['Nome']))
+        if str(local["Nome"]) == str(nome_local):
+            return local
+    
+    # Se o nome não for encontrado, retorna None
     return None
 
 def deletarLocalTuristico(id_local):
@@ -62,6 +76,27 @@ def deletarLocalTuristico(id_local):
         json.dump(locais_turisticos, arquivo, indent=4)
 
 
+def alterarLocalTuristico(id, nome, endereco, descricao):
+    # Carregar os dados do arquivo JSON
+    with open("./banco.json", "r") as arquivo:
+        locais_turisticos = json.load(arquivo)
+
+    # Iterar sobre os locais turísticos e remover o local com o ID correspondente
+    for local in locais_turisticos:
+        if str(local['ID']) == str(id):
+            if nome != '':
+                local['Nome'] = nome
+            if endereco != '':
+                local['endereco'] = endereco
+            if descricao != '':
+                local['descricao'] = descricao
+            
+            break
+
+    # Escrever os dados atualizados no arquivo JSON
+    with open("./banco.json", "w") as arquivo:
+        json.dump(locais_turisticos, arquivo, indent=4)
+
 def gravarUsuario(user : Usuario):
     #Define o caminho do 'banco' e cria uma lista para receber os objetos JSON
     filename = 'src/bancoUsuario.json'
@@ -72,13 +107,6 @@ def gravarUsuario(user : Usuario):
         listObj = json.load(fp)
 
     #Define-se os novos dados
-    """novoUsuario = {
-        "Nome": user.get_nome(),
-        "Login": user.get_login(),
-        "Senha": user.get_senha(),
-        "isAdmin": user.get_isAdmin()
-        }"""
-    
     novoUsuario = {
         "Nome": user.nome,
         "Login": user.login,

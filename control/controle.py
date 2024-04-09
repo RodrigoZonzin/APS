@@ -19,23 +19,44 @@ class LocalTuristicoController:
         
         return localT
 
-    def buscarLocalTuristicoID(self, id_local):
-        local = showLocalTuristico(id_local)
+    def buscarLocalTuristicoID(id_local):
+        local = showLocalTuristicoId(id_local)
         local = lc.LocalTuristico(local['ID'], local['Nome'], local['Endereco'], local['Descricao'])
        
         return local
     
-    #def buscarLocalTuristicoNome(self, nome):
-    #    pass
+    def buscarLocalTuristicoNome(nome_local):
+        local = showLocalTuristicoNome(nome_local)
+        local = lc.LocalTuristico(local['ID'], local['Nome'], local['Endereco'], local['Descricao'])
+       
+        return local
     
     def apagarLocalTuristico(self, id_local):
         deletarLocalTuristico(id_local)
     
-    def alterarInfo(self,id_local, op):
+    def alterarInfo(id_local, nome, endereco, descricao):
+        alterarLocalTuristico(id_local, nome, endereco, descricao)
+
+class UsuarioController:
+    def __init__(self):
         pass
 
+    #Cadastrar
+    def adicionar_usuario(self, Usuario):
+        gravarUsuario(Usuario)
+        pass
 
-class AtracaoTuristicaController:
+    def buscar_usuario(self, login):
+        return showUsuario(login)
+
+    def apagar_usuario(self, login):
+        deletarUsuario(login)
+
+    def fazer_login(self,Login,Senha):
+        return buscaUsuario(Login,Senha)
+
+
+"""class AtracaoTuristicaController:
     def __init__(self):
         pass
 
@@ -86,22 +107,4 @@ class RotaTuristicaController:
         pass
 
     def apagar_rota(self, id_rota):
-        pass
-
-class UsuarioController:
-    def __init__(self):
-        pass
-
-    #Cadastrar
-    def adicionar_usuario(self, Usuario):
-        gravarUsuario(Usuario)
-        pass
-
-    def buscar_usuario(self, login):
-        return showUsuario(login)
-
-    def apagar_usuario(self, login):
-        deletarUsuario(login)
-
-    def fazer_login(self,Login,Senha):
-        return buscaUsuario(Login,Senha)
+        pass"""

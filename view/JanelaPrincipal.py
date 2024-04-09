@@ -55,6 +55,8 @@ class Janela:
         self.barraPesquisa['justify'] = 'center'
         self.barraPesquisa.pack(side='top', pady=10)
 
+        Button(self.fr1, text='Buscar', command=self.chamaTelaBusca).pack(side='top')
+
 
         #CONTAINER QUE CONTERÁ A LISTAGEM DE ATRAÇÕES TURISTICAS
         self.frameListagemAtracoes = Frame(self.root)
@@ -121,20 +123,30 @@ class Janela:
         self.telaInserc = Toplevel(self.root)
         self.telaInserc.title('Inserir Local Turístico')
         self.telaInserc.geometry('300x250')
+        self.telaInserc.configure(bg="#6cbd74")
 
         frame1 = Frame(self.telaInserc)
         frame1.pack()
+        frame1.configure(bg="#6cbd74")
 
-        Label(frame1, text='ID').pack()
+        l1 = Label(frame1, text='ID')
+        l1.configure(bg="#6cbd74")
+        l1.pack()
         self.idLc = Entry(frame1)
         self.idLc.pack()
-        Label(frame1, text='Nome').pack()
+        l2 = Label(frame1, text='Nome')
+        l2.configure(bg="#6cbd74")
+        l2.pack()
         self.nomeLc = Entry(frame1)
         self.nomeLc.pack()
-        Label(frame1, text='Endereço').pack()
+        l3 = Label(frame1, text='Endereço')
+        l3.configure(bg="#6cbd74")
+        l3.pack()
         self.endLc = Entry(frame1)
         self.endLc.pack()
-        Label(frame1, text='Descrição').pack()
+        l4 = Label(frame1, text='Descrição')
+        l4.configure(bg="#6cbd74")
+        l4.pack()
         self.descLc = Entry(frame1)
         self.descLc.pack()
 
@@ -142,3 +154,44 @@ class Janela:
 
     def enviarInserirLc(self):
         ct.LocalTuristicoController.adicionarLocalTuristico(self.idLc.get(), self.nomeLc.get(), self.endLc.get(), self.descLc.get())
+
+    def chamaTelaBusca(self):
+        local = ct.LocalTuristicoController.buscarLocalTuristicoNome(self.barraPesquisa.get())
+
+        self.telaBusca = Toplevel(self.root)
+        self.telaBusca.title('Resultado da Pesquisa')
+        self.telaBusca.geometry('550x450')
+        self.telaBusca.configure(bg= '#6cbd74')
+
+        #CONTAINER QUE CONTERÁ O BOTOA DE VOLTAR
+        self.barraSuperior = Frame(self.telaBusca)
+        self.barraSuperior['background'] = "#316b2d"
+        self.barraSuperior['height'] = 140
+        self.barraSuperior.pack(side="top", fill = "x")
+
+        #BOTAO VOLTAR 
+        #ADD O COMANDO VOLTAR 
+        self.botaoVoltar = Button(self.barraSuperior, text= "Volte para a Página Inicial", command=self.telaBusca.destroy)
+        self.botaoVoltar.pack(side='left')
+
+        #container com as demais informações 
+        self.campoResultado = Frame(self.telaBusca, fill = 'both')
+        self.campoResultado['bg'] = '#6cbd74'
+        self.campoResultado.pack(side='top')
+
+        #campo add imagem 
+        #self.referenciaImagem = ImageTk.PhotoImage(Image.open('view/imgs/img_id4.jpg').resize((300, 200)))
+        #self.image = self.referenciaImagem;
+        #self.campoImagem = Label(self.campoResultado, image = self.referenciaImagem);  #lembrar de colocar o path correto
+        #self.campoImagem.pack(side = 'top', pady = 0)
+
+        #campo titulo
+        self.tituloBusca = Label(self.campoResultado)
+        self.tituloBusca['text'] = "Cidade tal" #tratar resultado apropriado
+        self.tituloBusca['font'] = ('Verdana', '20')
+        self.tituloBusca.pack(side='top')
+
+        #campo descricao
+        self.campoDescricao = Label(self.campoResultado)
+        self.campoDescricao['text'] = "Descricaoooooooooo"
+        self.campoDescricao.pack(side='top')

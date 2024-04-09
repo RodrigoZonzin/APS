@@ -12,7 +12,7 @@ class JanelaLogin():
         
         self.janelaLogin = Toplevel()
         self.janelaLogin.title("Página de Login")
-        self.janelaLogin.geometry("900x600")
+        self.janelaLogin.geometry('300x250')
         self.janelaLogin.configure(bg="#6cbd74")
 
 
@@ -28,15 +28,18 @@ class JanelaLogin():
         #FRAME QUE CONTERÁ TEXTO "LOGIN", CAMPO DE ENTRADA PARA O USUARIO
         #TEXTO "SENHA", CAMPO DE ENTRADA E BOTOA "ENTRAR"
         self.campoLogin = Frame(self.janelaLogin, pady=30)
+        self.campoLogin.configure(bg="#6cbd74")
         self.campoLogin.pack(side='top')
 
         self.textoNome = Label(self.campoLogin, text="Usuario:")
+        self.textoNome.configure(bg="#6cbd74")
         self.textoNome.pack(side='top')
 
         self.entradaNome = Entry(self.campoLogin)
         self.entradaNome.pack(side='top')
 
         self.textoSenha = Label(self.campoLogin, text="Senha:", pady=10)
+        self.textoSenha.configure(bg="#6cbd74")
         self.textoSenha.pack(side='top')
         
         self.entradaSenha = Entry(self.campoLogin)
