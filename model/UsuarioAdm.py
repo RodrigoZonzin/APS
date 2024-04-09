@@ -1,8 +1,13 @@
 from Usuario import Usuario
 
 class UsuarioAdm(Usuario):
-    def alterarSuasInfos(self):
+
+    def __init__(self, id, nome, login, senha, isAdmin):
+
+
+    def alterarSuasInfos():
         return
+        
     
     def gerencairSeusComents(self):
         return
