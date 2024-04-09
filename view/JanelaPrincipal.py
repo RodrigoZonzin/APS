@@ -8,6 +8,8 @@ from control import controle as ct
 controladorLocalTuristico = ct.LocalTuristicoController()
 controladorUsuario = ct.UsuarioController()
 
+from . import JanelaLogin as jl
+
 class Janela:
 
     def __init__(self): 
@@ -32,7 +34,7 @@ class Janela:
         self.botaoLogin['background'] = "#546353"
         self.botaoLogin['font'] = ('Verdana', '12')
         self.botaoLogin['text'] = "Login"
-        self.botaoLogin.bind("<Button-1>", self.muda_cor)
+        self.botaoLogin.bind("<Button-1>", self.chama_telaLogin)
         self.botaoLogin.pack(side= 'right')
         
 
@@ -57,12 +59,17 @@ class Janela:
         #CONTAINER QUE CONTERÁ A LISTAGEM DE ATRAÇÕES TURISTICAS
         self.frameListagemAtracoes = Frame(root)
         self.frameListagemAtracoes['background'] = "#44404a"
-        #self.frameListagemAtracoes['height'] = 500
         self.frameListagemAtracoes['width'] = 550
         self.frameListagemAtracoes.pack(side = 'top', fill = "y", pady=30)
 
-        scroll_bar = Scrollbar(self.frameListagemAtracoes, orient='vertical', command=self.frameListagemAtracoes) 
+        #BARRA DE DESCIDA DA PÁGINA
+        #NAO ESTÁ FUNCIONANDO
+        scroll_bar = Scrollbar(self.frameListagemAtracoes, orient='vertical', command=self.frameListagemAtracoes.yview) 
         scroll_bar.pack(side= 'right', fill='y')
+
+        self.frameListagemAtracoes.configure(yscrollcommand=scroll_bar.set)
+        self.frameListagemAtracoes.bind('<Configure>', lambda e: self.frameListagemAtracoes.configure(scrollregion= self.frameListagemAtracoes.bbox('all')))
+
 
 
         #infoCidades = pd.read_csv("APS/bancoDeDados/atracaoTuristica.csv", sep=';')
@@ -77,7 +84,7 @@ class Janela:
         self.txtAtracoes = []
 
         for i, row in enumerate(infoCidades.itertuples()): 
-            self.Atracaoes.append(Frame(self.frameListagemAtracoes))
+            self.Atracaoes.append(Frame(self.frameListagemAtracoes, pady=10))
             self.Atracaoes[i]['background'] = "gray"
             self.Atracaoes[i]['height'] = 100
             self.Atracaoes[i].pack(side='top', fill='y')
@@ -107,5 +114,5 @@ class Janela:
         #self.frameListagemAtracoes.config(yscrollcommand=scroll_bar.set)
         root.mainloop()
 
-    def muda_cor(self, event):
-        self.botaoLogin['background'] = 'yellow'
+    def chama_telaLogin(self, event):
+        jl.JanelaLogin()
