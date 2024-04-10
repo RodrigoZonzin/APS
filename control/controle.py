@@ -1,13 +1,13 @@
 #contém as classes que recebem as solicitações feitas pelos usuários na visão e executam os casos de uso do software, 
 #seja processar cálculos, combinar dados para estatísticas, 
 #ou solicitar que a persistência recupere ou grave dados.
-from modelo import *
+from antigos.modelo import *
 from persistencia.persistencia import *
+from persistencia.PersistenciaUsuarioNormal import PersistenciaUsuario as pu
 
 from model import UsuarioNormal as un
 #from model import UsuarioAdm as ua
 from model import LocalTuristico as lc
-#from persistencia import persistencia as pers
 
 class LocalTuristicoController:
     def __init__(self):
@@ -27,33 +27,42 @@ class LocalTuristicoController:
     
     def buscarLocalTuristicoNome(nome_local):
         local = showLocalTuristicoNome(nome_local)
-        local = lc.LocalTuristico(local['ID'], local['Nome'], local['Endereco'], local['Descricao'])
+        if local != None:
+            local = lc.LocalTuristico(local['ID'], local['Nome'], local['Endereco'], local['Descricao'])
        
         return local
     
-    def apagarLocalTuristico(self, id_local):
-        deletarLocalTuristico(id_local)
+    def apagarLocalTuristico(id_local):
+        return deletarLocalTuristico(id_local)
     
     def alterarInfo(id_local, nome, endereco, descricao):
         alterarLocalTuristico(id_local, nome, endereco, descricao)
+
 
 class UsuarioController:
     def __init__(self):
         pass
 
     #Cadastrar
-    def adicionar_usuario(self, Usuario):
-        gravarUsuario(Usuario)
-        pass
+    def adicionar_usuario(nome, login, senha):
+        user = un.UsuarioNormal(nome, login, senha, False)
+        insereUsuario(user) #N estou usando a persistenciaUsuario, pois estava dando erro por algum motivo
+        
+        return user
 
-    def buscar_usuario(self, login):
+    def buscar_usuario(login):
         return showUsuario(login)
 
-    def apagar_usuario(self, login):
+    def apagar_usuario(login):
         deletarUsuario(login)
 
-    def fazer_login(self,Login,Senha):
-        return buscaUsuario(Login,Senha)
+    def fazer_login(Login,Senha):
+        user = login(Login,Senha)
+        #Verifica se o usuario existe
+        if user != None:
+            user = un.UsuarioNormal(user['Nome'], user['Login'], user['Senha'], user['isAdmin'])
+        
+        return user
 
 
 """class AtracaoTuristicaController:

@@ -3,6 +3,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 import random
 import pandas as pd
+from control import controle as ct
 
 
 class JanelaLogin():
@@ -54,6 +55,14 @@ class JanelaLogin():
         usuario = self.entradaNome.get()
         senha = self.entradaSenha.get()
         
-        # Exibindo o texto para demonstração
-        print("Usuário:", usuario)
-        print("Senha:", senha)
+        response = ct.UsuarioController.fazer_login(usuario, senha)
+
+        if response != None:
+            l1 = Label(self.janelaLogin, text=f'Login feito com sucesso. Seja bem vindo {response.nome}!')
+            l1.configure(bg="#6cbd74")
+            l1.pack()
+        
+        else:
+            l1 = Label(self.janelaLogin, text='Login ou senha invalidos')
+            l1.configure(bg="#6cbd74")
+            l1.pack()

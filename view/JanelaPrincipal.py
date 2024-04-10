@@ -15,8 +15,6 @@ class Janela:
     def __init__(self): 
         self.root = tkk.Tk()
 
-        #print(controladorLocalTuristico.buscarLocalTuristicoID(1).nome)
-
         #CONFIGURAÇÃO DA PÁGINA PRINCIPAL
         self.root.title("Empresa de Turismo")
         self.root.geometry("900x600")
@@ -29,6 +27,13 @@ class Janela:
         self.fr1['height'] = 140
         self.fr1.pack(side="top", fill = "x")
         
+        #BOTÃO DE REGISRAR
+        self.botaoReg = Button(self.fr1, text='Registrar', command=self.chama_telaReg)
+        self.botaoReg['background'] = "#546353"
+        self.botaoReg['font'] = ('Verdana', '12')
+        self.botaoReg.pack(side='right')
+
+
         #BOTÃO DE LOGIN
         self.botaoLogin = Button(self.fr1)
         self.botaoLogin['background'] = "#546353"
@@ -111,6 +116,7 @@ class Janela:
 
         self.fButtun = Frame(self.root).pack(side='top')
         Button(self.fButtun, text='Registar Local', command=self.insercaoTL).pack(side='top')
+        Button(self.fButtun, text='Deletar Local', command=self.deletaTL).pack(side='top')
 
         #scroll_bar.config(command=self.frameListagemAtracoes.yview)
         #self.frameListagemAtracoes.config(yscrollcommand=scroll_bar.set)
@@ -119,6 +125,37 @@ class Janela:
     def chama_telaLogin(self, event):
         jl.JanelaLogin()
 
+    def chama_telaReg(self):
+        self.telaReg = Toplevel(self.root)
+        self.telaReg.title('Fazer Cadastro')
+        self.telaReg.geometry('300x250')
+        self.telaReg.configure(bg="#6cbd74")
+
+        f1 = Frame(self.telaReg)
+        f1.configure(bg="#6cbd74")
+        f1.pack()
+
+        l1 = Label(f1, text='Nome')
+        l1.configure(bg="#6cbd74")
+        l1.pack()
+        self.nome = Entry(f1)
+        self.nome.pack()
+        l2 = Label(f1, text='Login')
+        l2.configure(bg="#6cbd74")
+        l2.pack()
+        self.login = Entry(f1)
+        self.login.pack()
+        l3 = Label(f1, text='Senha')
+        l3.configure(bg="#6cbd74")
+        l3.pack()
+        self.senha = Entry(f1)
+        self.senha.pack()
+
+        Button(f1, text='Enviar', command=lambda: (self.enviarUsuario(), self.telaReg.destroy())).pack()
+
+    def enviarUsuario(self):
+        ct.UsuarioController.adicionar_usuario(self.nome.get(), self.login.get(), self.senha.get())
+
     def insercaoTL(self):
         self.telaInserc = Toplevel(self.root)
         self.telaInserc.title('Inserir Local Turístico')
@@ -126,8 +163,8 @@ class Janela:
         self.telaInserc.configure(bg="#6cbd74")
 
         frame1 = Frame(self.telaInserc)
-        frame1.pack()
         frame1.configure(bg="#6cbd74")
+        frame1.pack()
 
         l1 = Label(frame1, text='ID')
         l1.configure(bg="#6cbd74")
@@ -150,48 +187,94 @@ class Janela:
         self.descLc = Entry(frame1)
         self.descLc.pack()
 
+        #Usa-se o lambda para dar duas funcoes para o comando do botão
         Button(frame1, text='Enviar', command=lambda: (self.enviarInserirLc(), self.telaInserc.destroy())).pack()
+
+    def deletaTL(self):
+        self.telaDel = Toplevel(self.root)
+        self.telaDel.title('Apagar Local Turístico')
+        self.telaDel.geometry('300x250')
+        self.telaDel.configure(bg="#6cbd74")
+
+        frame1 = Frame(self.telaDel)
+        frame1.configure(bg="#6cbd74")
+        frame1.pack()
+
+        l1 = Label(frame1, text='ID')
+        l1.configure(bg="#6cbd74")
+        l1.pack()
+        self.idDel = Entry(frame1)
+        self.idDel.pack()
+        
+        Button(frame1, text='Enviar', command=self.enviarDeletelc).pack()
+
+    def enviarDeletelc(self):
+        control = ct.LocalTuristicoController.apagarLocalTuristico(self.idDel.get())
+        if control:
+            l1 = Label(self.telaDel, text='Local deletado com sucesso')
+            l1.configure(bg="#6cbd74")
+            l1.pack()
+        else:
+            l1 = Label(self.telaDel, text='Nao foi possivel deletar o local')
+            l1.configure(bg="#6cbd74")
+            l1.pack()
+
 
     def enviarInserirLc(self):
         ct.LocalTuristicoController.adicionarLocalTuristico(self.idLc.get(), self.nomeLc.get(), self.endLc.get(), self.descLc.get())
 
+
     def chamaTelaBusca(self):
         local = ct.LocalTuristicoController.buscarLocalTuristicoNome(self.barraPesquisa.get())
 
-        self.telaBusca = Toplevel(self.root)
-        self.telaBusca.title('Resultado da Pesquisa')
-        self.telaBusca.geometry('550x450')
-        self.telaBusca.configure(bg= '#6cbd74')
+        if local == None:
+            self.telaVazia = Toplevel(self.root)
+            self.telaVazia.title('Falha na busca')
+            self.telaVazia.geometry('300x85')
+            self.telaVazia.configure(bg= '#6cbd74')
 
-        #CONTAINER QUE CONTERÁ O BOTOA DE VOLTAR
-        self.barraSuperior = Frame(self.telaBusca)
-        self.barraSuperior['background'] = "#316b2d"
-        self.barraSuperior['height'] = 140
-        self.barraSuperior.pack(side="top", fill = "x")
+            l1 = Label(self.telaVazia, text='O nome pesquisado nao foi encontrado')
+            l1.configure(bg= '#6cbd74')
+            l1.pack(side='top')
+            Button(self.telaVazia, text='Fechar', command=self.telaVazia.destroy).pack(side='top')
+        else:
+            self.telaBusca = Toplevel(self.root)
+            self.telaBusca.title('Resultado da Pesquisa')
+            self.telaBusca.geometry('550x450')
+            self.telaBusca.configure(bg= '#6cbd74')
 
-        #BOTAO VOLTAR 
-        #ADD O COMANDO VOLTAR 
-        self.botaoVoltar = Button(self.barraSuperior, text= "Volte para a Página Inicial", command=self.telaBusca.destroy)
-        self.botaoVoltar.pack(side='left')
+            #CONTAINER QUE CONTERÁ O BOTOA DE VOLTAR
+            self.barraSuperior = Frame(self.telaBusca)
+            self.barraSuperior['background'] = "#316b2d"
+            self.barraSuperior['height'] = 140
+            self.barraSuperior.pack(side="top", fill = "x")
 
-        #container com as demais informações 
-        self.campoResultado = Frame(self.telaBusca, fill = 'both')
-        self.campoResultado['bg'] = '#6cbd74'
-        self.campoResultado.pack(side='top')
+            #BOTAO VOLTAR 
+            #ADD O COMANDO VOLTAR 
+            self.botaoVoltar = Button(self.barraSuperior, text= "Volte para a Página Inicial", command=self.telaBusca.destroy)
+            self.botaoVoltar.pack(side='left')
 
-        #campo add imagem 
-        #self.referenciaImagem = ImageTk.PhotoImage(Image.open('view/imgs/img_id4.jpg').resize((300, 200)))
-        #self.image = self.referenciaImagem;
-        #self.campoImagem = Label(self.campoResultado, image = self.referenciaImagem);  #lembrar de colocar o path correto
-        #self.campoImagem.pack(side = 'top', pady = 0)
+            #container com as demais informações 
+            self.campoResultado = Frame(self.telaBusca)
+            self.campoResultado['bg'] = '#6cbd74'
+            self.campoResultado.pack(side='top')
+            self.campoResultado.pack()
 
-        #campo titulo
-        self.tituloBusca = Label(self.campoResultado)
-        self.tituloBusca['text'] = "Cidade tal" #tratar resultado apropriado
-        self.tituloBusca['font'] = ('Verdana', '20')
-        self.tituloBusca.pack(side='top')
+            #campo add imagem 
+            #self.referenciaImagem = ImageTk.PhotoImage(Image.open('view/imgs/img_id4.jpg').resize((300, 200)))
+            #self.image = self.referenciaImagem;
+            #self.campoImagem = Label(self.campoResultado, image = self.referenciaImagem);  #lembrar de colocar o path correto
+            #self.campoImagem.pack(side = 'top', pady = 0)
 
-        #campo descricao
-        self.campoDescricao = Label(self.campoResultado)
-        self.campoDescricao['text'] = "Descricaoooooooooo"
-        self.campoDescricao.pack(side='top')
+            #campo titulo
+            self.tituloBusca = Label(self.campoResultado)
+            self.tituloBusca['text'] = f"{local.nome}" #tratar resultado apropriado
+            self.tituloBusca['font'] = ('Verdana', '20')
+            self.tituloBusca.configure(bg= '#6cbd74')
+            self.tituloBusca.pack(side='top')
+
+            #campo descricao
+            self.campoDescricao = Label(self.campoResultado)
+            self.campoDescricao['text'] = f"{local.descricao}"
+            self.campoDescricao.configure(bg= '#6cbd74')
+            self.campoDescricao.pack(side='top')

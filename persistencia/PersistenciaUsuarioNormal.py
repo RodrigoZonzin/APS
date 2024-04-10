@@ -1,10 +1,9 @@
 import pandas as pd
-import model.UsuarioNormal
 
 
 class PersistenciaUsuario():
 
-    def __init__(self, usuario):
+    def __init__(self):
         self.nomeArquivo = 'ArquivoPersistenciaUsuarioNormal.csv'
 
     def criaArquivoPersistencia(self):
@@ -16,7 +15,7 @@ class PersistenciaUsuario():
         self.df_persistencia = pd.read_csv(self.nomeArquivo)
 
         tupla = {
-            "id": usuario.id,
+            #"id": usuario.id,
             "nome": usuario.nome,
             "login": usuario.login,
             "senha": usuario.senha,

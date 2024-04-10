@@ -1,13 +1,9 @@
-from Turismo import *
+from . import Turismo as t
 
-class LocalTuristico(Turismo):
-
-    #herdando construtor de Turismo
-    def __init__(self, id, nome, endereco, descricao):
-        super.__init__(id, nome, endereco, descricao)
-
+class LocalTuristico(t.Turismo):
     def alteraNome(self, novoNome):
         self.nome = novoNome
+
     def alteraEndereco(self, novoEndereco):
         self.endereco = novoEndereco
 
@@ -17,4 +13,7 @@ class LocalTuristico(Turismo):
     def alterarInfos(self, nome, endereco, descricao):
         self.nome = nome
         self.endereco = endereco
-        self.descricao = descricao    
+        self.descricao = descricao
+
+    def apagar():
+        pass    

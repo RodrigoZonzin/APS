@@ -3,7 +3,7 @@
 
 from os import path
 import json
-from modelo import *
+from antigos.modelo import *
 
 def gravarLocalTuristico(LT : Turismo):
 
@@ -53,7 +53,6 @@ def showLocalTuristicoNome(nome_local):
 
     # Buscar o local turístico pelo ID
     for local in locais_turisticos:
-        print(str(local['Nome']))
         if str(local["Nome"]) == str(nome_local):
             return local
     
@@ -61,19 +60,30 @@ def showLocalTuristicoNome(nome_local):
     return None
 
 def deletarLocalTuristico(id_local):
+    control = 0
+    
     # Carregar os dados do arquivo JSON
-    with open("src/banco.json", "r") as arquivo:
+    with open("./banco.json", "r") as arquivo:
         locais_turisticos = json.load(arquivo)
 
     # Iterar sobre os locais turísticos e remover o local com o ID correspondente
     for local in locais_turisticos:
         if str(local["ID"]) == str(id_local):
             locais_turisticos.remove(local)
+            control = 1
             break
 
-    # Escrever os dados atualizados no arquivo JSON
-    with open("src/banco.json", "w") as arquivo:
-        json.dump(locais_turisticos, arquivo, indent=4)
+    # A variavel control = 1 garante que o usuario foi encontrado. Se for 0, ent ele n foi encontrado
+    if control == 1:
+        # Escrever os dados atualizados no arquivo JSON
+        with open("./banco.json", "w") as arquivo:
+            json.dump(locais_turisticos, arquivo, indent=4)
+
+        return True
+    
+    #Nesse caso, retorna False, ao n econtrar o usuario para deletar
+    else:
+        return False
 
 
 def alterarLocalTuristico(id, nome, endereco, descricao):
@@ -97,9 +107,10 @@ def alterarLocalTuristico(id, nome, endereco, descricao):
     with open("./banco.json", "w") as arquivo:
         json.dump(locais_turisticos, arquivo, indent=4)
 
-def gravarUsuario(user : Usuario):
+
+def insereUsuario(user : Usuario):
     #Define o caminho do 'banco' e cria uma lista para receber os objetos JSON
-    filename = 'src/bancoUsuario.json'
+    filename = './bancoUsuario.json'
     listObj = []
 
     #Abre o arquivo e armazena os objetos JSON dentro da lista
@@ -111,6 +122,7 @@ def gravarUsuario(user : Usuario):
         "Nome": user.nome,
         "Login": user.login,
         "Senha": user.senha,
+        'isAdmin': user.isAdmin
         }
     
     #Adiciona os novos dados da lista de objetos JSON
@@ -123,17 +135,20 @@ def gravarUsuario(user : Usuario):
                             indent=4,
                             separators=(',',': '))
 
-def buscaUsuario(login, senha):
-    with open("src/bancoUsuario.json", 'r') as arquivo:
+
+def login(login, senha):
+    with open("./bancoUsuario.json", 'r') as arquivo:
         jsonObject = json.load(arquivo)
     
     for usuario in jsonObject:
         if usuario["Login"] == login and usuario["Senha"] == senha:
             return usuario
+    
     return None
 
+
 def showUsuario(login):
-     # Carregar os dados do arquivo JSON
+    # Carregar os dados do arquivo JSON
     with open("src/bancoUsuario.json", "r") as arquivo:
         usuarios = json.load(arquivo)
 
@@ -144,6 +159,7 @@ def showUsuario(login):
     
     # Se o login não for encontrado, retorna None
     return None
+
 
 def deletarUsuario(login):
     # Carregar os dados do arquivo JSON

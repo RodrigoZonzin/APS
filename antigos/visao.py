@@ -2,7 +2,7 @@
 #Essas classes só podem apresentar e obter dados de e para os usuários, 
 #mas não são elas que executam os casos de uso do software;
 from control.controle import *
-from modelo import *
+from antigos.modelo import *
 
 controladorLocalTuristico = LocalTuristicoController()
 controladorUsuario = UsuarioController()
