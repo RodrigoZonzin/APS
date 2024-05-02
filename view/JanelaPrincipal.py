@@ -5,6 +5,7 @@ import random
 import pandas as pd
 from control import controle as ct
 from . import JanelaLogin as jl
+from . import JanelaRegistrar as jr
 
 controladorLocalTuristico = ct.LocalTuristicoController()
 controladorUsuario = ct.UsuarioController()
@@ -126,32 +127,7 @@ class Janela:
         jl.JanelaLogin()
 
     def chama_telaReg(self):
-        self.telaReg = Toplevel(self.root)
-        self.telaReg.title('Fazer Cadastro')
-        self.telaReg.geometry('300x250')
-        self.telaReg.configure(bg="#6cbd74")
-
-        f1 = Frame(self.telaReg)
-        f1.configure(bg="#6cbd74")
-        f1.pack()
-
-        l1 = Label(f1, text='Nome')
-        l1.configure(bg="#6cbd74")
-        l1.pack()
-        self.nome = Entry(f1)
-        self.nome.pack()
-        l2 = Label(f1, text='Login')
-        l2.configure(bg="#6cbd74")
-        l2.pack()
-        self.login = Entry(f1)
-        self.login.pack()
-        l3 = Label(f1, text='Senha')
-        l3.configure(bg="#6cbd74")
-        l3.pack()
-        self.senha = Entry(f1)
-        self.senha.pack()
-
-        Button(f1, text='Enviar', command=lambda: (self.enviarUsuario(), self.telaReg.destroy())).pack()
+        jr.JanelaReg()
 
     def enviarUsuario(self):
         ct.UsuarioController.adicionar_usuario(self.nome.get(), self.login.get(), self.senha.get())

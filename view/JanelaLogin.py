@@ -1,8 +1,4 @@
-import tkinter as tkk
 from tkinter import *
-from PIL import ImageTk, Image
-import random
-import pandas as pd
 from control import controle as ct
 
 
