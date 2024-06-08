@@ -1,11 +1,21 @@
 from tkinter import *
+from control import controlUser as ct
+from . import JanelaLogin as jl
+
+controladorUsuario = ct.UsuarioController()
+
 
 class JanelaReg:
-    def __init__(self):
-        self.root = Tk()
+    def __init__(self, princ):
+        self.princ = princ
+        self.root = Toplevel(princ)
         self.root.title('Fazer Cadastro')
         self.root.geometry('900x600')
         self.root.configure(bg="#6cbd74")
+        
+        #Essa linha reprograma oq acontece ao destruir a janela (como por ex clicar no botão 'x')
+        #Nesse caso, ao clicar vai acontecer unicamente oq tiver na funcao self.fecharPrograma
+        self.root.protocol("WM_DELETE_WINDOW", self.fecharPrograma)
 
         #CABEÇALHO DA TELA 
         cabecalho = Frame(
@@ -19,7 +29,7 @@ class JanelaReg:
         bLogin = Button(
             cabecalho, 
             text='Login', 
-            command='',
+            command=lambda: (self.root.destroy(), jl.JanelaLogin(princ)),
             bg='#546353',
             font=('Verdana', '12')
         )
@@ -29,7 +39,7 @@ class JanelaReg:
         bVoltar = Button(
             cabecalho, 
             text='Voltar', 
-            command='',
+            command=lambda: (self.root.destroy(), princ.deiconify()),
             bg='#546353',
             font=('Verdana', '12')
         )
@@ -37,7 +47,7 @@ class JanelaReg:
 
 
         #CAMPOS DE DADOS PARA O REGISTRO    
-        campoInput = Frame(self.root, bg="#6cbd74")
+        campoInput = Frame(self.root, bg="#6cbd74") #talvez seja legal mudar a cor desse frame, para dar mais "volume" a tela
         campoInput.pack(pady=70)
 
         lTitulo = Label(
@@ -82,14 +92,16 @@ class JanelaReg:
             campoInput, 
             text='Enviar', 
             command=lambda: (self.enviarUsuario(), self.root.destroy()),
-            font=('Arial', '13'),   
+            font=('Arial', '13')  
         )
         bEnviar.pack(pady=16)
 
         self.root.mainloop()
 
+    def enviarUsuario(self):
+        controladorUsuario.adicionar_usuario(self.nome.get(), self.login.get(), self.senha.get())
 
-
-#------P/ TESTE------
-if __name__ == '__main__':
-    JanelaReg()
+    def fecharPrograma(self):
+        #To destruindo essa janela e a janela principal (self.princ) que estava escondida/invisível
+        self.root.destroy()
+        self.princ.destroy()

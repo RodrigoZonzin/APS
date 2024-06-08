@@ -1,34 +1,57 @@
 import pandas as pd
+import json
 
 
 class PersistenciaUsuario():
-
-    def __init__(self):
+    '''def __init__(self):
         self.nomeArquivo = 'ArquivoPersistenciaUsuarioNormal.csv'
 
     def criaArquivoPersistencia(self):
         self.arq_persistencia = pd.DataFrame(columns = ['id', 'nome', 'login', 'senha', 'isAdmin'])
 
-        self.arq_persistencia.to_csv(self.nomeArquivo, index=False)
+        self.arq_persistencia.to_csv(self.nomeArquivo, index=False)'''
 
-    def insereUsuario(self, usuario):
-        self.df_persistencia = pd.read_csv(self.nomeArquivo)
+    def insereUsuario(self, user):
+        #Define o caminho do 'banco' e cria uma lista para receber os objetos JSON
+        filename = './bancoUsuario.json'
+        listObj = []
 
-        tupla = {
-            #"id": usuario.id,
-            "nome": usuario.nome,
-            "login": usuario.login,
-            "senha": usuario.senha,
-            "isAdmin": usuario.isAdmin
+        #Abre o arquivo e armazena os objetos JSON dentro da lista
+        with open(filename) as fp:
+            listObj = json.load(fp)
+
+        #Define-se os novos dados
+        novoUsuario = {
+            "Nome": user.nome,
+            "Login": user.login,
+            "Senha": user.senha,
+            'isAdmin': user.isAdmin
         }
+        
+        #Adiciona os novos dados da lista de objetos JSON
+        listObj.append(novoUsuario)
 
-        #add tupla (id, ... , isAdmin) à ultima linha do arquivo
-        self.df_persistencia = self.df_persistencia.append(tupla, ignore_index=True)
+        #Abre o arquivo porém agora para escrita, utiliza a função json.dump que serializa
+        #o meu novo dado, permitindo que ele possa ser recolocado dentro do meu JSON
+        with open(filename, 'w') as json_file:
+            json.dump(
+                listObj, 
+                json_file,
+                indent=4,
+                separators=(',',': ')
+            )
 
-        #salva de novo
-        self.df_persistencia.to_csv(self.nomeArquivo, index=False)
+    def fazerLogin(self, login, senha):
+        with open("./bancoUsuario.json", 'r') as arquivo:
+            bancoDados = json.load(arquivo)
+    
+        for usuario in bancoDados:
+            if usuario["Login"] == login and usuario["Senha"] == senha:
+                return usuario
+        
+        return None
 
-    def procuraUsuarioPorLogin(self, login):
+    '''def procuraUsuarioPorLogin(self, login):
         self.df_persistencia = pd.read_csv(self.nomeArquivo)
 
         #problema se retornar None
@@ -40,4 +63,4 @@ class PersistenciaUsuario():
 
         #problema se retornar None
         #deve ser resolvido quando houver tempo
-        return self.df_persistencia.iloc[self.df_persistencia['id'] == id]
+        return self.df_persistencia.iloc[self.df_persistencia['id'] == id]'''

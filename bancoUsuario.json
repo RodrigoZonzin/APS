@@ -28,5 +28,11 @@
         "Login": "Gio123",
         "Senha": "123gio",
         "isAdmin": false
+    },
+    {
+        "Nome": "a",
+        "Login": "a",
+        "Senha": "a",
+        "isAdmin": false
     }
 ]

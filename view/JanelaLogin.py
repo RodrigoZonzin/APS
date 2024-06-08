@@ -1,64 +1,129 @@
 from tkinter import *
-from control import controle as ct
+from control import controlUser as ct
+from .import JanelaRegistrar as jr
 
+controladorUsuario = ct.UsuarioController()
 
 class JanelaLogin():
+    def __init__(self, princ, callback): 
+        self.princ = princ
+        self.callback = callback
 
-    def __init__(self): 
         #CONFIGURAÇÃO DA PÁGINA DE LOGIN
-        
-        self.janelaLogin = Toplevel()
-        self.janelaLogin.title("Página de Login")
-        self.janelaLogin.geometry('300x250')
-        self.janelaLogin.configure(bg="#6cbd74")
+        self.root = Toplevel(princ)
+        self.root.title("Fazer Login")
+        self.root.geometry('900x600')
+        self.root.configure(bg="#6cbd74")
 
+        #Essa linha reprograma oq acontece ao destruir a janela (como por ex clicar no botão 'x')
+        #Nesse caso, ao clicar vai acontecer unicamente oq tiver na funcao self.fecharPrograma
+        self.root.protocol("WM_DELETE_WINDOW", self.fecharPrograma)
 
-        #CONTAINER QUE CONTERÁ O BOTOA DE VOLTAR
-        self.barraSuperior = Frame(self.janelaLogin)
-        self.barraSuperior['background'] = "#316b2d"
-        self.barraSuperior['height'] = 140
-        self.barraSuperior.pack(side="top", fill = "x")
+        #CABEÇALHO DA TELA 
+        cabecalho = Frame(
+            self.root,
+            bg='#316b2d',
+            height=140
+        )
+        cabecalho.pack(side="top", fill = "x")
 
-        self.botaoVoltar = Button(self.barraSuperior, text= "Volte para a Página Inicial", command=self.janelaLogin.destroy)
-        self.botaoVoltar.pack(side='left')
+        #BOTÃO DE Registrar
+        bReg = Button(
+            cabecalho, 
+            text='Registrar', 
+            command=lambda: (self.root.destroy(), jr.JanelaReg(princ)),
+            bg='#546353',
+            font=('Verdana', '12')
+        )
+        bReg.pack(side='right')
+
+        #BOTÃOI DE VOLTAR
+        self.bVoltar = Button(
+            cabecalho, 
+            text='Voltar', 
+            command=self.voltarJenelaPrin,
+            bg='#546353',
+            font=('Verdana', '12')
+        )
+        self.bVoltar.pack(side='left')
+
 
         #FRAME QUE CONTERÁ TEXTO "LOGIN", CAMPO DE ENTRADA PARA O USUARIO
         #TEXTO "SENHA", CAMPO DE ENTRADA E BOTOA "ENTRAR"
-        self.campoLogin = Frame(self.janelaLogin, pady=30)
-        self.campoLogin.configure(bg="#6cbd74")
-        self.campoLogin.pack(side='top')
+        campoLogin = Frame(self.root, pady=30, bg='#6cbd74')
+        campoLogin.pack(side='top', pady=70)
 
-        self.textoNome = Label(self.campoLogin, text="Usuario:")
-        self.textoNome.configure(bg="#6cbd74")
-        self.textoNome.pack(side='top')
+        lTitulo = Label(
+            campoLogin, 
+            text='Fazer Login',
+            bg='#6cbd74',
+            font=('Arial', '20')
+        )
+        lTitulo.pack(pady=6)
 
-        self.entradaNome = Entry(self.campoLogin)
+        textoNome = Label(
+            campoLogin, 
+            text="Usuario:",
+            bg='#6cbd74',
+            font=('Arial', '13')
+        )
+        textoNome.pack(side='top', pady=6)
+
+        self.entradaNome = Entry(campoLogin)
         self.entradaNome.pack(side='top')
 
-        self.textoSenha = Label(self.campoLogin, text="Senha:", pady=10)
-        self.textoSenha.configure(bg="#6cbd74")
-        self.textoSenha.pack(side='top')
+        textoSenha = Label(
+            campoLogin, 
+            text="Senha:", 
+            bg='#6cbd74',
+            font=('Arial', '13')  
+        )
+        textoSenha.pack(side='top', pady=6)
         
-        self.entradaSenha = Entry(self.campoLogin)
+        self.entradaSenha = Entry(campoLogin)
         self.entradaSenha.pack(side='top')
 
-        self.botaoEntrar = Button(self.campoLogin, text="Entrar", command=self.entrar)
-        self.botaoEntrar.pack(side='top')
+        botaoEntrar = Button(
+            campoLogin, 
+            text="Entrar", 
+            command=self.entrar,
+            font=('Arial', '13')  
+        )
+        botaoEntrar.pack(side='top', pady=16)
 
+        self.labelLogin = Label(
+            self.root,
+            text='',
+            bg='#6cbd74'
+        )
+        self.labelLogin.pack()
+
+        self.root.mainloop()
 
     def entrar(self):
         # Obtendo o texto das entradas
         usuario = self.entradaNome.get()
         senha = self.entradaSenha.get()
         
-        response = ct.UsuarioController.fazer_login(usuario, senha)
-
+        response = controladorUsuario.fazer_login(usuario, senha) #Como passar essa info a janela principal
+        
         if response != None:
-            l1 = Label(self.janelaLogin, text=f'Login feito com sucesso. Seja bem vindo {response.nome}!')
-            l1.configure(bg="#6cbd74")
-            l1.pack()
+            self.labelLogin.configure(text=f'Login feito com sucesso. Seja bem vindo {response.nome}!\nRedirecinando a tela principal.')
+            self.user = response
+
+            #faz uma pausa de 2segs antes de executar  oo voltarJanelaPrin
+            self.callback(response)
+            self.root.after(1500, self.voltarJenelaPrin)
         
         else:
-            l1 = Label(self.janelaLogin, text='Login ou senha invalidos')
-            l1.configure(bg="#6cbd74")
-            l1.pack()
+            self.labelLogin.config(text='Login ou senha invalidos')
+
+
+    def voltarJenelaPrin(self):
+        self.princ.deiconify()
+        self.root.destroy()
+
+    def fecharPrograma(self):
+        #To destruindo essa janela e a janela principal (self.princ) que estava escondida/invisível
+        self.root.destroy()
+        self.princ.destroy()
