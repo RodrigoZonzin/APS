@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-
+import banco.banco as banco
 
 class PersistenciaUsuario():
     '''def __init__(self):
@@ -11,6 +11,21 @@ class PersistenciaUsuario():
 
         self.arq_persistencia.to_csv(self.nomeArquivo, index=False)'''
 
+
+    #insere no banco de dados utilizando as tabelas do BD SQL
+    def insereUsuarioBanco(self, user): 
+        #tupla (nome, login, senha, is_admin)
+        novoUsuario = (
+            user.nome,
+            user.login,
+            user.senha,
+            user.isAdmin)
+        
+        banco.insere_usuario(novoUsuario)
+        banco.commit()
+
+    #insere no banco (arquivos JSON). Essa função estava sendo utilizada até agora
+    #nao apaguei para discutir qual é a melhor opção. Assinado: Rodrigo
     def insereUsuario(self, user):
         #Define o caminho do 'banco' e cria uma lista para receber os objetos JSON
         filename = './bancoUsuario.json'
@@ -50,6 +65,17 @@ class PersistenciaUsuario():
                 return usuario
         
         return None
+
+    def fazerLogin(self, login, senha): 
+        pass
+        #banco.recuper
+
+    def procuraUsuarioPorLogin(self, login): 
+        return banco.recupera_usuario_login(login)
+    
+    def procuraUsuarioPorId(self, id): 
+        return banco.recupera_usuario_id(id)
+        
 
     '''def procuraUsuarioPorLogin(self, login):
         self.df_persistencia = pd.read_csv(self.nomeArquivo)
