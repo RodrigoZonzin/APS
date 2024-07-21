@@ -1,5 +1,6 @@
 import model.LocalTuristico
 import json
+from banco.banco import *
 
 class PersisnciaLocalTuristico():
 
@@ -11,6 +12,11 @@ class PersisnciaLocalTuristico():
 
         self.arq_persistencia.to_csv(self.nomeArquivo, index=False)'''
 
+    def inserirLocal(self, LT: model.LocalTuristico): 
+        LT_tuple = (LT.nome, LT.endereco, LT.descricao)
+        return inserir_local_turistico([LT_tuple]); 
+
+    """
     def inserirLocal(self, LT):
         try:
             res = self.procuraLocalPorId(LT.id)
@@ -52,6 +58,11 @@ class PersisnciaLocalTuristico():
         except:
             print('Erro ao inserir local turistico')
             return False
+    """
+
+    def procuraLocalPorId(self, id): 
+        resposta_banco = procura_local_turistico_por_id(); 
+        if resposta_banco  
 
     def procuraLocalPorId(self, id):
         filename = './banco.json'

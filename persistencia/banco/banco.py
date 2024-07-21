@@ -56,7 +56,8 @@ def recupera_usuario_nome(login:str):
     resposta.fetchall(); 
     return list(resposta)[0]; #[0] pois pode haver várias respostas em outros tipos de consulta
 
-def recupera_usuario_id(id:str): 
+#retorna uma tupla com as informacoes do usuario (nome, ... , )
+def recupera_usuario_id(id:str) -> tuple: 
     resposta = cur.execute(f"""
         SELECT * 
         FROM USUARIO 
@@ -75,6 +76,7 @@ def recupera_usuarios():
     resposta = resposta.fetchall(); 
     return list(resposta)
 
+#consulta login e senha para permitir o login
 def fazer_login(login, senha): 
     resposta = cur.execute(f"""
         SELECT * 
@@ -83,5 +85,27 @@ def fazer_login(login, senha):
     """)
     return list(resposta.fetchall()) 
 
+#LT deve ser uma lista unitária de tupla [(nome, endereco, descricao)]
+#retorna True se der certo e Falso se der errado (qualquer que seja o motivo)
+def inserir_local_turistico(LT: list) -> bool:
+    try: 
+        bd.execute("INSERT INTO TURISMO(nome, endereco, descricao) VALUES (?, ?, ?)", LT) 
+        return True
+    
+    except Exception: 
+        return False 
+
+#retorna uma tupla com as informacoes do local turistico 
+#(nome, endereco, descricao)
+def procura_local_turistico_por_id(id: int) -> tuple: 
+    cur.execute(f"""
+        SELECT * 
+        FROM TURISMO
+        WHERE id_turismo = {id}
+    """)
+    return list(cur.fetchall())[0]
+
+#salva as alteracoes no arquivo .db 
 def commit():
     bd.commit()
+
