@@ -62,7 +62,7 @@ def recupera_usuario_id(id:str):
         FROM USUARIO 
         WHERE id_usuario = {id}
     """)
-    resposta.fetchall(); 
+    resposta = resposta.fetchall(); 
     return list(resposta)[0]; #[0] pois pode haver várias respostas em outros tipos de consulta (funcao abaixo)
 
 #retorna uma lista [user0, ... usern] com todos os usuarios,
@@ -72,8 +72,16 @@ def recupera_usuarios():
         SELECT * 
         FROM USUARIO 
     """)
-    resposta.fetchall(); 
+    resposta = resposta.fetchall(); 
     return list(resposta)
+
+def fazer_login(login, senha): 
+    resposta = cur.execute(f"""
+        SELECT * 
+        FROM USUARIO                       
+        WHERE login = {login} AND senha = {senha}
+    """)
+    return list(resposta.fetchall()) 
 
 def commit():
     bd.commit()

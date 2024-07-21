@@ -67,7 +67,7 @@ class PersistenciaUsuario():
         return None
 
     def fazerLogin(self, login, senha): 
-        pass
+        return fazer_login(login, senha)
         #banco.recuper
 
     def procuraUsuarioPorLogin(self, login): 
