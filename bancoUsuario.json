@@ -33,6 +33,6 @@
         "Nome": "a",
         "Login": "a",
         "Senha": "a",
-        "isAdmin": false
+        "isAdmin": true
     }
 ]

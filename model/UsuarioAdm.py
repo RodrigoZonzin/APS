@@ -1,13 +1,33 @@
 from Usuario import Usuario
 
 class UsuarioAdm(Usuario):
-
-    def __init__(self, id, nome, login, senha, isAdmin = True):
+    '''def __init__(self, id, nome, login, senha, isAdmin = True):
         self.id = id
         self.nome = nome
         self.login = login
         id.senha = senha
-        id.isAdmin = isAdmin
+        id.isAdmin = isAdmin'''
+
+    #metodos unicos dessa classe
+    def gerenciarUsuarios(self):
+        return
+    
+    def gerenciarComents(self):
+        #talvez n precise
+        return
+    
+    def gerenciarAvals(self):
+        return
+    
+    def gerenciarLocais(self):
+        return
+    
+    def gerenciarAtracoes(self):
+        return
+    
+    def gerenciarRotas(self):
+        return
+    
 
 
     def alterarNome(self, nomeNovo):
@@ -35,24 +55,5 @@ class UsuarioAdm(Usuario):
         return
     
     def fazerAval(self):
-        return
-    
-    #metodos unicos dessa classe
-    def gerenciarUsuarios(self):
-        return
-    
-    def gerenciarComents(self):
-        return
-    
-    def gerenciarAvals(self):
-        return
-    
-    def gerenciarLocais(self):
-        return
-    
-    def gerenciarAtracoes(self):
-        return
-    
-    def gerenciarRotas(self):
         return
     

@@ -1,6 +1,6 @@
 import model.LocalTuristico
 import json
-from banco.banco import *
+from persistencia.banco import banco as banco
 
 class PersisnciaLocalTuristico():
 
@@ -14,7 +14,7 @@ class PersisnciaLocalTuristico():
 
     def inserirLocal(self, LT: model.LocalTuristico): 
         LT_tuple = (LT.nome, LT.endereco, LT.descricao)
-        return inserir_local_turistico([LT_tuple]); 
+        #return inserir_local_turistico([LT_tuple]); 
 
     """
     def inserirLocal(self, LT):
@@ -60,9 +60,9 @@ class PersisnciaLocalTuristico():
             return False
     """
 
-    def procuraLocalPorId(self, id): 
-        resposta_banco = procura_local_turistico_por_id(); 
-        if resposta_banco  
+    #def procuraLocalPorId(self, id): 
+    #    resposta_banco = procura_local_turistico_por_id(); 
+    #   if resposta_banco  
 
     def procuraLocalPorId(self, id):
         filename = './banco.json'

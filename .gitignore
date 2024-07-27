@@ -1,4 +1,9 @@
 *.json
 *.txt
+*.db
+*.db-journal
+*.md
+
 antigos/
 UML/
+__pycache__/

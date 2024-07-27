@@ -7,6 +7,8 @@ class Usuario(ABC):
         self.senha = senha
         self.isAdmin = isAdmin
 
+        self.avals = [] 
+
 
     #Verificar se precisa que esses metodos sejam abstratos
     @abstractmethod
@@ -14,7 +16,7 @@ class Usuario(ABC):
         return
     
     @abstractmethod
-    def gerencairSeusComents(self):
+    def gerenciarSeusComents(self):
         return
     
     @abstractmethod

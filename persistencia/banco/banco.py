@@ -1,12 +1,12 @@
 import sqlite3
 
-DATABASE_PATH = 'APS/persistencia/banco/database.db'; 
+DATABASE_PATH = 'persistencia/banco/database.db'; 
 
 bd = sqlite3.connect(DATABASE_PATH)
 cur = bd.cursor()
 
 bd.execute("""
-    CREATE TABLE USUARIO(
+    CREATE TABLE IF NOT EXISTS USUARIO(
         id_usuario int auto_increment primary key,
         nome varchar(100) not null, 
         login varchar(30) not null,
@@ -16,7 +16,7 @@ bd.execute("""
 """)
 
 bd.execute("""
-    CREATE TABLE TURISMO(
+    CREATE TABLE IF NOT EXISTS TURISMO(
         id_turismo int auto_increment primary key,   
         nome varchar(100) not null,
         endereco varchar(200),
@@ -25,8 +25,14 @@ bd.execute("""
 """)
 
 bd.execute("""
-    CREATE TABLE LOCAL_TURISTICO(
+    CREATE TABLE IF NOT EXISTS LOCAL_TURISTICO(
         id_local_turistico int auto_increment primary key
+    );
+""")
+
+bd.execute("""
+    CREATE TABLE IF NOT EXISTS AVALIACAO(
+        id loginAutor nota idLocalAtracao dataHora coment     
     );
 """)
 
@@ -42,10 +48,13 @@ def drop_table(nome_tabela: str) -> bool:
 
 #dados deve ser uma tupla (nome, login, senha, is_admin)
 def insere_usuario(dados: tuple):
-    bd.executemany(
-        "INSERT INTO USUARIO(nome, login, senha, is_admin) VALUES (?, ?, ?, ?)",
-        dados); 
- 
+    try:
+        bd.execute(
+            "INSERT INTO USUARIO(nome, login, senha, is_admin) VALUES (?, ?, ?, ?)",
+            dados); 
+    except sqlite3.Error as e:
+        print(f"ERROR in user registration\n{e}")
+
 #procura na tabela Usuario por nome e retorna uma lista com todos os atributos 
 def recupera_usuario_nome(login:str): 
     resposta = cur.execute(f"""
@@ -81,8 +90,14 @@ def fazer_login(login, senha):
     resposta = cur.execute(f"""
         SELECT * 
         FROM USUARIO                       
-        WHERE login = {login} AND senha = {senha}
+        WHERE login = {login}
     """)
+
+    if resposta == senha:
+        print("deu certo")
+    else:
+        print("n deu certo")
+        
     return list(resposta.fetchall()) 
 
 #LT deve ser uma lista unitária de tupla [(nome, endereco, descricao)]

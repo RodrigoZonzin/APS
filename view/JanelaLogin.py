@@ -31,13 +31,13 @@ class JanelaLogin():
         bReg = Button(
             cabecalho, 
             text='Registrar', 
-            command=lambda: (self.root.destroy(), jr.JanelaReg(princ)),
+            command=lambda: (self.root.destroy(), jr.JanelaReg(princ, callback)),
             bg='#546353',
             font=('Verdana', '12')
         )
         bReg.pack(side='right')
 
-        #BOTÃOI DE VOLTAR
+        #BOTÃO DE VOLTAR
         self.bVoltar = Button(
             cabecalho, 
             text='Voltar', 

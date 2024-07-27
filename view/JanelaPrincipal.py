@@ -1,4 +1,4 @@
-import tkinter as tkk
+#import tkinter as tkk
 from tkinter import *
 from PIL import ImageTk, Image
 import pandas as pd
@@ -8,6 +8,8 @@ from . import JanelaRegistrar as jr
 from . import JanelaInserirLocal as ji
 from . import JanelaDeletarLocal as jd
 from . import JanelaBuscar as jb
+from . import JanelaUsuarioNormal as ju
+from . import JanelaUsuarioAdm as jua
 
 controladorLocalTuristico = ct.LocalTuristicoController()
 controladorUsuario = ct.UsuarioController()
@@ -15,10 +17,9 @@ controladorUsuario = ct.UsuarioController()
 
 class Janela:
     def __init__(self): 
-        self.isLogged = True
-        #self.user = StringVar()
-        #self.user.set('abc')
         self.root = Tk()
+        self.isLogged = False
+        self.user = StringVar()
 
         #CONFIGURAÇÃO DA PÁGINA PRINCIPAL
         self.root.title("Empresa de Turismo")
@@ -38,7 +39,7 @@ class Janela:
         self.botaoReg = Button(
             self.fr1, 
             text='Registrar', 
-            command=lambda: (self.root.withdraw(), jr.JanelaReg(self.root)),
+            command=lambda: (self.root.withdraw(), jr.JanelaReg(self.root, self.callbackLogin)),
             bg='#546353',
             font=('Verdana', '12')
         )
@@ -56,17 +57,12 @@ class Janela:
 
         #APENAS TESTE
         '''if self.isLogged:
-            lTeste = Label(self.fr1, text=f'{self.user}', bg='#316b2d')
-            lTeste.pack(side='left')'''
+            lNome = Label(self.fr1, text=f'{self.user.get()}', bg='#316b2d')
+            lNome.pack(side='left')'''
+        
+        self.lNome = Label(self.fr1, text='', bg='#316b2d')
+        self.lNome.pack(side='left')
 
-
-        #BOTÃO VOLTAR
-        '''self.botaoVoltar = Button(self.fr1)
-        self.botaoVoltar['background'] = "#546353"
-        self.botaoVoltar['font'] = ('Verdana', '12')
-        self.botaoVoltar['text'] = "Voltar"
-        #self.botaoVoltar.bind("<Button-1>", self.voltar)
-        self.botaoVoltar.pack(side = 'left', anchor='center')'''
 
         #FRAME PESQUISA
         self.fr2 = Frame(self.fr1, bg='#316b2d')
@@ -156,8 +152,40 @@ class Janela:
         self.janelaLog = jl.JanelaLogin(self.root, self.callbackLogin)
 
     def callbackLogin(self, user):
-        self.user.set(user.nome)
+        self.userClass = user#n sei vamos ver
+
+        self.user.set(user.nome)#n sei vamos ver
         self.isLogged = True
+        self.isAdmin = user.isAdmin
+
+        self.lNome.config(text=str(user.nome))
+        self.botaoLogin.config(text='Logout', command=self.logOut)
+        self.botaoReg.config(text='Usuário', command=self.chamarTelaUser)
+
+    def logOut(self):
+        alert = Toplevel(self.root, bg="#6cbd74")
+        alert.title('Alerta Logout')
+        alert.geometry('315x120')
+
+        fAlert = Frame(alert, bg="#6cbd74")
+        fAlert.pack(pady=40)
+        
+        lAlert = Label(fAlert, text='Logout realizado com sucesso', bg="#6cbd74")
+        lAlert.pack()
+
+        self.isLogged = False
+        self.user.set('')
+        self.lNome.config(text='')
+        self.botaoLogin.config(text='Login', command=self.chamarTelaLogin)
+        self.botaoReg.config(text='Registrar', command=lambda: (self.root.withdraw(), jr.JanelaReg(self.root, self.callbackLogin)))
+
+    def chamarTelaUser(self):
+        self.root.withdraw()
+        if self.isAdmin:
+            jua.JanelaUsuarioAdm(self.root, self.userClass)
+        else:
+            ju.JanelaUsuarioNormal(self.root, self.userClass)
+        #print('Fazer tela user')
 
     def chamarInsercaoTL(self):
         ji.JanelaInserirLocal(self.root)

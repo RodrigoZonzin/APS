@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-import banco.banco as banco
+from persistencia.banco import banco as banco
 
 class PersistenciaUsuario():
     '''def __init__(self):
@@ -66,9 +66,9 @@ class PersistenciaUsuario():
         
         return None
 
-    def fazerLogin(self, login, senha): 
-        return fazer_login(login, senha)
-        #banco.recuper
+    #def fazerLogin(self, login, senha): 
+    #   return fazer_login(login, senha)
+    #   banco.recuper
 
     def procuraUsuarioPorLogin(self, login): 
         return banco.recupera_usuario_login(login)

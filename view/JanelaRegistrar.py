@@ -6,7 +6,7 @@ controladorUsuario = ct.UsuarioController()
 
 
 class JanelaReg:
-    def __init__(self, princ):
+    def __init__(self, princ, callbackLogin):
         self.princ = princ
         self.root = Toplevel(princ)
         self.root.title('Fazer Cadastro')
@@ -29,7 +29,7 @@ class JanelaReg:
         bLogin = Button(
             cabecalho, 
             text='Login', 
-            command=lambda: (self.root.destroy(), jl.JanelaLogin(princ)),
+            command=lambda: (self.root.destroy(), jl.JanelaLogin(princ, callbackLogin)),
             bg='#546353',
             font=('Verdana', '12')
         )
@@ -91,7 +91,7 @@ class JanelaReg:
         bEnviar = Button(
             campoInput, 
             text='Enviar', 
-            command=lambda: (self.enviarUsuario(), self.root.destroy()),
+            command=self.enviarUsuario,
             font=('Arial', '13')  
         )
         bEnviar.pack(pady=16)
@@ -100,6 +100,9 @@ class JanelaReg:
 
     def enviarUsuario(self):
         controladorUsuario.adicionar_usuario(self.nome.get(), self.login.get(), self.senha.get())
+        self.princ.deiconify()
+        self.root.destroy()
+
 
     def fecharPrograma(self):
         #To destruindo essa janela e a janela principal (self.princ) que estava escondida/invisível
