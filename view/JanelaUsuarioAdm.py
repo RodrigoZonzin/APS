@@ -1,9 +1,14 @@
 from tkinter import *
 
+from control.controlUser import UsuarioController
+
+control = UsuarioController()
+
 class JanelaUsuarioAdm():
     def __init__(self, princ, user):
         self.princ = princ
         self.user = user
+        self.allUsers = control.retornaAllUsers()
 
         self.root = Toplevel(self.princ)
         self.root.title("Janela do Usuário")
@@ -56,7 +61,7 @@ class JanelaUsuarioAdm():
         btnUser = Button(
             btnFr,
             text='Usuários',
-            command='',
+            command=self.tabelaUsers,
             width=10
         )
         btnUser.pack(pady=5, side='left')
@@ -64,7 +69,7 @@ class JanelaUsuarioAdm():
         btnAvals = Button(
             btnFr,
             text='Avaliações',
-            command='',
+            command=self.destroiTabela, #teste
             width=10
         )
         btnAvals.pack(pady=5, side='left')
@@ -85,6 +90,146 @@ class JanelaUsuarioAdm():
         )
         btnRotas.pack(pady=5, side='left')
 
+        self.frLista = Frame(
+            corpo,
+            bg="#6cbd74",
+            width=400, #pensar em diminuir isso, ou achar uma forma de centralizar o texto
+            height=800
+        )
+        self.frLista.pack(pady=15)
+        self.frLista.pack_propagate(False)
+
+        self.listFr = []
+        self.nomes = []
+        self.logins = []
+        self.adms = []
+        self.btnsExcluir = []
+        self.btnsAdm = []
+
+        self.tabelaUsers()
+
+
+    def destroiTabela(self):
+        for i in range(len(self.listFr)):
+            self.listFr[i].destroy()
+            self.nomes[i].destroy()
+            self.logins[i].destroy()
+            self.adms[i].destroy()
+            self.btnsExcluir[i].destroy()
+            self.btnsAdm[i].destroy()
+
+        self.listFr = []
+        self.nomes = []
+        self.logins = []
+        self.adms = []
+        self.btnsExcluir = []
+        self.btnsAdm = []
+
+    def destroiLinhaTabela(self, i):
+        self.listFr[i].destroy()
+        self.nomes[i].destroy()
+        self.logins[i].destroy()
+        self.adms[i].destroy()
+        self.btnsExcluir[i].destroy()
+        self.btnsAdm[i].destroy()
+
+        self.listFr.pop(i)
+        self.nomes.pop(i)
+        self.logins.pop(i)
+        self.adms.pop(i)
+        self.btnsExcluir.pop(i)
+        self.btnsAdm.pop(i)
+
+    def tabelaUsers(self):
+        self.destroiTabela()
+
+        for i, item in enumerate(self.allUsers):
+            self.listFr.append(Frame(
+                self.frLista,
+                bg='gray',
+                height=80
+            ))
+            self.listFr[i].pack(fill='x')
+
+            self.nomes.append(Label(
+                self.listFr[i],
+                bg='gray',
+                text=f'{item[1]}'
+            ))
+            self.nomes[i].pack(side='left', padx=7)
+
+            self.logins.append(Label(
+                self.listFr[i],
+                bg='gray',
+                text=f'{item[2]}'
+            ))
+            self.logins[i].pack(side='left', padx=7)
+
+            self.adms.append(Label(
+                self.listFr[i],
+                bg='gray',
+                text=f''
+            ))
+            self.adms[i].pack(side='left', padx=7)
+
+            self.btnsExcluir.append(Button(
+                self.listFr[i],
+                text='Excluir',
+                command=lambda i=i, login=item[2]:self.chamarApagaUser(i, login),
+                width=7
+            ))
+            self.btnsExcluir[i].pack(side='right')
+
+            self.btnsAdm.append(Button(
+                self.listFr[i],
+                text='',
+                command=lambda login=item[2], i=item[4], index=i:self.chamarMudarAdm(i, login, index),
+                width=7
+            ))
+            self.btnsAdm[i].pack(side='right')
+
+            if item[4] == 0:
+                self.adms[i].configure(
+                    text='É adm? Não'
+                )
+
+                self.btnsAdm[i].configure(
+                    text='Tornar Adm',
+                )
+
+            else:
+                self.adms[i].configure(
+                    text='É adm? Sim'
+                )
+
+                self.btnsAdm[i].configure(
+                    text='Tirar Adm',
+                )
+
+    def chamarMudarAdm(self, i, login, index):
+        if login == self.user.login:
+            print("ERROR: Tentando se alterar")
+            return
+        
+        res = control.mudarAdm(login, i)
+
+        if res == 200:
+            if i == 0:
+                self.btnsAdm[index].configure(text='Tirar Adm')
+                self.adms[index].configure(text='É adm? Sim')
+            else:
+                self.btnsAdm[index].configure(text='Tornar Adm')
+                self.adms[index].configure(text='É adm? Não')
+
+    def chamarApagaUser(self, i, login):
+        if login == self.user.login:
+            print("ERROR: Tentando se apagar")
+            return
+
+        res = control.apagar_usuario(login)
+
+        if res == 200:
+            self.destroiLinhaTabela(i)
 
     def voltarJanelaPrin(self):
         self.princ.deiconify()

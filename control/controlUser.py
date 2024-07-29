@@ -1,9 +1,10 @@
 from persistencia.PersistenciaUsuarioNormal import *
 from model import UsuarioNormal as un
 from model import Avaliacao as av
-from persistencia.banco import banco as banco
+from persistencia.banco import banco as b
 
 persist = PersistenciaUsuario()
+banco = b.Banco()
 
 class UsuarioController:
     def __init__(self):
@@ -11,22 +12,23 @@ class UsuarioController:
 
     #Cadastrar
     def adicionar_usuario(self, nome, login, senha):
-        user = un.UsuarioNormal(nome, login, senha, False)
-        persist.insereUsuario(user)
+        #user = un.UsuarioNormal(nome, login, senha, False)
+        #persist.insereUsuario(user)
 
         dados = (nome, login, senha, 0)   
-        #banco.insere_usuario(dados)
+        banco.insere_usuario([dados])
 
-        return user
+        #return user
 
     def fazer_login(self, login, senha):
-        user = persist.fazerLogin(login, senha)
-        #user = banco.fazer_login(login, senha)
-        print("usuario: ", user)
+        #user = persist.fazerLogin(login, senha)
+        user = banco.fazer_login(login, senha)
 
         #Verifica se o usuario existe
-        if user != None:
-            return un.UsuarioNormal(user['Nome'], user['Login'], user['Senha'], user['isAdmin'])
+        if user != 400 and user != 500:
+            print("usuario: ", user)
+            #arrumar depois para adicionar o id no objeto usuario
+            return un.UsuarioNormal(user[1], user[2], user[3], user[4])
         
         return None
 
@@ -50,10 +52,24 @@ class UsuarioController:
 
         return user
 
-    def buscar_usuario(login):
+    def retornaAllUsers(self):
+        users = banco.recupera_usuarios()
+
+        if users != 500:
+            return users
+        else:
+            print("Erro ao recuperar usuarios")
+
+    def buscar_usuario(self, login):
         #return showUsuario(login)
         pass
 
-    def apagar_usuario(login):
-        #deletarUsuario(login)
-        pass
+    def mudarAdm(self, login, isAdm):
+        res = banco.mudarAdm(login, isAdm)
+
+        return res
+
+    def apagar_usuario(self, login):
+       res = banco.excluir_usuario(login)
+
+       return res
