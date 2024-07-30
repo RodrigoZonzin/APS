@@ -21,7 +21,9 @@ class UsuarioNormal(u.Usuario):
     def gerenciarSuasAvals(self):
         return
     
-    
+    def get_id(self):
+        return self.id
+
     #Area n sei se vai precisar:
     def alterarSuasInfos(self):
         return

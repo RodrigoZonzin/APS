@@ -13,8 +13,6 @@ class JanelaUsuarioNormal():
         self.root.geometry("900x600")
         self.root.config(bg="#6cbd74")
 
-        self.teste()
-
         #Essa linha reprograma oq acontece ao destruir a janela (como por ex clicar no botão 'x')
         #Nesse caso, ao clicar vai acontecer unicamente oq tiver na funcao self.fecharPrograma
         self.root.protocol("WM_DELETE_WINDOW", self.fecharPrograma)
@@ -228,7 +226,7 @@ class JanelaUsuarioNormal():
 
 
     #apagar depois
-    def verAvals(self):
+    '''def verAvals(self):
         #arrumar isso aqui. Fazer algo para mostrar as avaliacoes
         print(self.user.avals[0].nota)
 
@@ -238,4 +236,4 @@ class JanelaUsuarioNormal():
         self.user = control.fazerAvaliacao(self.user, aval)
         aval = (0, self.user.login, 10, 0, '11/05', 'bbb')
         self.user = control.fazerAvaliacao(self.user, aval)
-        self.verAvals()
+        self.verAvals()'''
