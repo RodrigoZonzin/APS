@@ -6,7 +6,6 @@ class Usuario(ABC):
         self.login = login
         self.senha = senha
         self.isAdmin = isAdmin
-
         self.avals = [] 
 
 

@@ -54,6 +54,24 @@ class Banco:
         except: 
             return False
 
+    #conferir com o almada
+    def cria_tabela_Avaliacao(self): 
+        try: 
+            self.bd.execute("""
+                CREATE TABLE AVALIACAO(
+                    id_avaliacao INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id_usuario INTEGER,
+                    nota INTEGER, 
+                    id_local_turistico INTEGER,
+                    data DATE, 
+                    comentario VARCHAR(300),
+                    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+                    FOREIGN KEY (id_local_turistico) REFERENCES Local_Turistico(id_local_turistico)
+                )                
+            """)
+            return True
+        except: 
+            return False
 
 
     #funcao para apagar uma tabela do banco de dados
@@ -224,7 +242,7 @@ class Banco:
         try: 
             self.bd.execute(f"""
                 DELETE FROM TURISMO
-                WHERE id_turismo = id 
+                WHERE id_turismo = {id} 
             """)
             return True
         except Exception: 
@@ -234,3 +252,57 @@ class Banco:
     def commit(self):
         self.bd.commit()
 
+    def insere_avaliacao(self, novaAvaliacao: list): 
+        try:
+            self.bd.executemany(
+                """INSERT INTO AVALIACAO(id_usuario, nota, id_local_turistico, data, comentario)
+                    VALUES (?, ?, ?, ?, ?)""", 
+                novaAvaliacao)
+            print(novaAvaliacao)
+            return True
+        except Exception as e: 
+            print(e)
+            return False
+
+
+
+    def exclui_avaliacao_id(self, id: int) -> bool: 
+        try: 
+            self.bd.execute(f"""
+                DELETE FROM AVALIACAO
+                WHERE id_avaliacao = {id} 
+            """)
+            return True
+        
+        except Exception: 
+            return False 
+
+    def procura_avaliacao_usuario(self, usuarioId): 
+        try:
+            resposta = self.cur.execute(f"""
+                SELECT u.nome, a.comentario, a.nota
+                FROM USUARIO u, 
+                JOIN AVALIACAO a,
+                ON a.id_autor = u.id_usuario
+                WHERE u.id_usuario = {usuarioId}    
+            """)
+            return list(resposta.fetchall())[0]
+        
+        except:
+            return False
+        
+    #retorna todas as avaliacoes de um determinado local turistico
+    #[(Gabriel, "Muito Bom!", 5), (Joao Pedro, "Bom", 4), ...]
+    def recupera_todas_avaliacoes_por_nome(self, nome):
+        try:
+            resposta = self.cur.execute("""
+                SELECT u.nome, a.comentario, a.nota
+                FROM USUARIO u
+                JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
+                JOIN TURISMO lt ON a.id_local_turistico = lt.id_turismo
+                WHERE lt.nome = ?
+            """, (nome,))
+            return list(resposta.fetchall())
+        except Exception as e:
+            print(e)
+            return False

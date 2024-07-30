@@ -10,6 +10,7 @@ from . import JanelaDeletarLocal as jd
 from . import JanelaBuscar as jb
 from . import JanelaUsuarioNormal as ju
 from . import JanelaUsuarioAdm as jua
+from . import JanelaAtracao as ja
 
 controladorLocalTuristico = ct.LocalTuristicoController()
 controladorUsuario = ct.UsuarioController()
@@ -135,7 +136,7 @@ class Janela:
             self.campoAtracoes[i].grid(column=1, row=0)
 
             #botao 'conheca tal lugar' para redirecionar a pagina
-            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row.Nome}'))
+            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row.Nome}', command = self.chamarTelaAtracoes))
             self.botaoAtracoes[i].pack(side='top')
 
             #breve descrição da atracao turistica
@@ -162,6 +163,20 @@ class Janela:
         self.botaoLogin.config(text='Logout', command=self.logOut)
         self.botaoReg.config(text='Usuário', command=self.chamarTelaUser)
 
+    def callbackAtracoes(self, atracao):
+        #Não sei o que o callback faz. Por ora, esse método não fará nada e 
+        #servirá apenas para nao dar erro de atributo nao existente ass: Rodrigo 
+        pass
+        """self.userClass = user#n sei vamos ver
+
+        self.user.set(user.nome)#n sei vamos ver
+        self.isLogged = True
+        self.isAdmin = user.isAdmin
+
+        self.lNome.config(text=str(user.nome))
+        self.botaoLogin.config(text='Logout', command=self.logOut)
+        self.botaoReg.config(text='Usuário', command=self.chamarTelaUser)
+        """
     def logOut(self):
         alert = Toplevel(self.root, bg="#6cbd74")
         alert.title('Alerta Logout')
@@ -187,5 +202,9 @@ class Janela:
             ju.JanelaUsuarioNormal(self.root, self.userClass)
         #print('Fazer tela user')
 
+    def chamarTelaAtracoes(self): 
+        self.root.withdraw()
+        self.janelaLog = ja.JanelaAtracao(self.root, self.callbackAtracoes)
+  
     def chamarInsercaoTL(self):
         ji.JanelaInserirLocal(self.root)
