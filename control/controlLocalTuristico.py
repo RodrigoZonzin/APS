@@ -1,29 +1,37 @@
 from persistencia.PersistenciaLocalTurisico import *
 from model import LocalTuristico as lc
 
+from persistencia.banco import banco as b
+
+banco = b.Banco()
+
 persist = PersisnciaLocalTuristico()
 
 class LocalTuristicoController:
-    def adicionarLocalTuristico(self, id, nome, endereco, descricao):
-        localT = lc.LocalTuristico(id, nome, endereco, descricao)
-        response = persist.inserirLocal(localT)
+    def adicionarLocalTuristico(self, lt: list):
+        response = banco.inserir_local_turistico(lt)
         
         if response == True:
             #verificar se precisa retorar msm o local
-            return localT
+            return True
         else:
-            return None
+            return False
 
     def deletarLocalTuristico(self, id_local):
-        return persist.deletarLocalTuristico(id_local)
+        return banco.exclui_local_turistico(id_local)
 
     def procuraLocalPorNome(self, nome_local):
-        local = persist.procuraLocalPorNome(nome_local)
-        if local != False:
-            #local é uma lista, ent preciso fazer esse if num for
-            local = lc.LocalTuristico(local[0]['ID'], local[0]['Nome'], local[0]['Endereco'], local[0]['Descricao'])
-       
-        return local
+       res = banco.procura_local_turistico_por_nome(nome_local)
+
+    def retornaTodosLocais(self):
+        res = banco.retornaTodosLocais()
+        return res
+    
+    def retornarAvalsLocal(self, ltId):
+        res = banco.recupera_todas_avaliacoes_local(ltId)
+        if res == False: return []
+
+        return res
 
 
     '''def buscarLocalTuristicoID(id_local):

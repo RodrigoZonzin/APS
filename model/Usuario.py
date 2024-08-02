@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod 
 
 class Usuario(ABC):
-    def __init__(self, nome, login, senha, isAdmin):
+    def __init__(self, id, nome, login, senha, isAdmin):
+        self.id = id
         self.nome = nome
         self.login = login
         self.senha = senha

@@ -1,5 +1,5 @@
 class Avaliacao:
-    def __init__(self, id, idAutor, nota, idLocalAtracao, dataHora, coment):
+    def __init__(self, idAutor, nota, idLocalAtracao, dataHora, coment, id=-1):
         self._id = id
         self._idAutor = idAutor
         self._nota = nota

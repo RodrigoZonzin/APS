@@ -97,7 +97,7 @@ class JanelaUsuarioNormal():
 
             self.locais.append(Label(
                 self.fr1[i],
-                text='local',
+                text=aval[4],
                 bg='gray',
                 font=('Verdana', '15')
             ))
@@ -105,7 +105,7 @@ class JanelaUsuarioNormal():
 
             self.dataH.append(Label(
                 self.fr1[i],
-                text=aval.dataHora,
+                text=aval[3],
                 bg='gray',
                 font=('Verdana', '12')
             ))
@@ -113,7 +113,7 @@ class JanelaUsuarioNormal():
 
             self.comentario.append(Label(
                 self.fr2[i],
-                text=f'Comentário: "{aval.coment}"',
+                text=f'Comentário: "{aval[1]}"',
                 bg='gray',
                 font=('Verdana', '12')
             ))
@@ -121,7 +121,7 @@ class JanelaUsuarioNormal():
 
             self.nota.append(Label(
                 self.fr2[i],
-                text=f"Nota: {aval.nota}",
+                text=f"Nota: {aval[2]}",
                 bg='gray',
                 font=('Verdana', '12')
             ))
@@ -187,7 +187,7 @@ class JanelaUsuarioNormal():
 
         nome = Label(
             fr,
-            text=f'Local: {aval.idLocalAtracao} (colocar depois o nome)',
+            text=f'Local: {aval[4]}',
             bg="#6cbd74",
             font=('Verdana', '12')
         )
@@ -195,7 +195,7 @@ class JanelaUsuarioNormal():
 
         nota = Label(
             fr,
-            text=f'Nota: {aval.nota}',
+            text=f'Nota: {aval[2]}',
             bg="#6cbd74",
             font=('Verdana', '12')
         )
@@ -203,7 +203,7 @@ class JanelaUsuarioNormal():
 
         coment = Label(
             fr,
-            text=f'Comentário: "{aval.coment}"',
+            text=f'Comentário: "{aval[1]}"',
             bg="#6cbd74",
             font=('Verdana', '12')
         )
@@ -211,7 +211,7 @@ class JanelaUsuarioNormal():
 
         dataHora = Label(
             fr,
-            text=f'Data e Hora da avaliação: {aval.dataHora}',
+            text=f'Data da avaliação: {aval[3]}',
             bg="#6cbd74",
             font=('Verdana', '12')
         )

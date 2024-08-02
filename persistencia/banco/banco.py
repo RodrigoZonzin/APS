@@ -27,11 +27,11 @@ class Banco:
 
 
 
-    def cria_tabela_turismo(self): 
+    def cria_tabela_local_turistico(self): 
         try: 
             self.bd.execute("""
-                CREATE TABLE TURISMO(
-                    id_turismo integer primary key autoincrement,   
+                CREATE TABLE LOCAL_TURISTICO(
+                    id_local_turisico integer primary key autoincrement,   
                     nome varchar(100) not null,
                     endereco varchar(200),
                     descricao varchar(500)
@@ -43,16 +43,16 @@ class Banco:
 
 
 
-    def cria_tabela_localTuristico(self): 
-        try: 
-            self.bd.execute("""
-                CREATE TABLE LOCAL_TURISTICO(
-                    id_local_turistico integer autoincrement primary key
-                );
-            """)
-            return True
-        except: 
-            return False
+    # def cria_tabela_localTuristico(self): 
+    #     try: 
+    #         self.bd.execute("""
+    #             CREATE TABLE LOCAL_TURISTICO(
+    #                 id_local_turistico integer autoincrement primary key
+    #             );
+    #         """)
+    #         return True
+    #     except: 
+    #         return False
 
     #conferir com o almada
     def cria_tabela_Avaliacao(self): 
@@ -122,14 +122,18 @@ class Banco:
 
     #procura na tabela Usuario por nome e retorna uma lista com todos os atributos 
     def procura_usuario_login(self, login:str): 
-        resposta = self.cur.execute(f"""
-            SELECT * 
-            FROM USUARIO 
-            WHERE login = {login}
-        """)
-        resposta.fetchall();
-        print([resposta]) 
-        return list(resposta)[0]; #[0] pois pode haver várias respostas em outros tipos de consulta
+        try:
+            resposta = self.cur.execute(f"""
+                SELECT * 
+                FROM USUARIO 
+                WHERE login = '{login}';
+            """)
+            #print([resposta]) 
+            return list(resposta.fetchall())[0]; #[0] pois pode haver várias respostas em outros tipos de consulta
+
+        except Exception as e:
+            print(f"ERROR ao retornar user: {e}")
+            return False
 
 
 
@@ -210,10 +214,12 @@ class Banco:
     #retorna True se der certo e Falso se der errado (qualquer que seja o motivo)
     def inserir_local_turistico(self, LT: list) -> bool:
         try: 
-            self.bd.execute("INSERT INTO TURISMO(nome, endereco, descricao) VALUES (?, ?, ?)", LT) 
+            self.bd.execute("INSERT INTO LOCAL_TURISTICO(nome, endereco, descricao) VALUES (?, ?, ?)", LT) 
+            self.commit()
             return True
         
-        except Exception: 
+        except Exception as e:
+            print(F'ERROR ao adicionar local: {e}') 
             return False 
 
     #retorna uma tupla com as informacoes do local turistico 
@@ -221,7 +227,7 @@ class Banco:
     def procura_local_turistico_por_id(self, id: int) -> tuple: 
         res = self.cur.execute(f"""
             SELECT * 
-            FROM TURISMO
+            FROM LOCAL_TURISTICO
             WHERE id_turismo = {id}
         """)
         return list(res.fetchall())[0]
@@ -229,39 +235,62 @@ class Banco:
     #retorna uma tupla com as informacoes do local turistico 
     #(nome, endereco, descricao)
     def procura_local_turistico_por_nome(self, nome: str) -> tuple: 
-        res = self.cur.execute(f"""
-            SELECT * 
-            FROM TURISMO 
-            WHERE nome = {nome}
-        """)
+        try:
+            res = self.cur.execute(f"""
+                SELECT * 
+                FROM LOCAL_TURISTICO 
+                WHERE nome = {nome}
+            """)
+            
+            return list(res.fetchall())
         
-        return list(res.fetchall())[0]
+        except Exception as e:
+            print(f'ERROR ao procuarar local: {e}')
+            return False
 
 
     def exclui_local_turistico(self, id: int) -> bool: 
         try: 
             self.bd.execute(f"""
-                DELETE FROM TURISMO
-                WHERE id_turismo = {id} 
+                DELETE FROM LOCAL_TURISTICO
+                WHERE id_local_turistico = {id} 
             """)
+            self.commit()
             return True
-        except Exception: 
+        except Exception as e:
+            print(f'ERROR  ao excluir local: {e}') 
             return False 
+
+
+    def retornaTodosLocais(self):
+        try: 
+            res = self.bd.execute(f"""
+                SELECT *
+                FROM LOCAL_TURISTICO 
+            """)
+
+            return list(res.fetchall())
+        
+        except Exception as e:
+            print(f'ERROR: {e}') 
+            return False
+
 
     #salva as alteracoes no arquivo .db 
     def commit(self):
         self.bd.commit()
 
-    def insere_avaliacao(self, novaAvaliacao: list): 
+    def insere_avaliacao(self, novaAvaliacao): 
         try:
-            self.bd.executemany(
-                """INSERT INTO AVALIACAO(id_usuario, nota, id_local_turistico, data, comentario)
-                    VALUES (?, ?, ?, ?, ?)""", 
-                novaAvaliacao)
+            self.bd.execute(
+                f"""INSERT INTO AVALIACAO(id_usuario, nota, id_local_turistico, data, comentario)
+                    VALUES ({novaAvaliacao[0]}, {novaAvaliacao[1]}, {novaAvaliacao[2]}, {novaAvaliacao[3]}, '{novaAvaliacao[4]}')""" 
+                )
             print(novaAvaliacao)
+            self.commit()
             return True
         except Exception as e: 
-            print(e)
+            print(f'ERROR ao inserir avaliacao: {e}')
             return False
 
 
@@ -272,9 +301,11 @@ class Banco:
                 DELETE FROM AVALIACAO
                 WHERE id_avaliacao = {id} 
             """)
+            self.commit()
             return True
         
-        except Exception: 
+        except Exception as e:
+            print(f'ERROR ao excluir avaliacao: {e}') 
             return False 
 
     def procura_avaliacao_usuario(self, usuarioId): 
@@ -291,18 +322,75 @@ class Banco:
         except:
             return False
         
-    #retorna todas as avaliacoes de um determinado local turistico
-    #[(Gabriel, "Muito Bom!", 5), (Joao Pedro, "Bom", 4), ...]
-    def recupera_todas_avaliacoes_por_nome(self, nome):
+
+    def retornaAvalId(self, avalId):
         try:
-            resposta = self.cur.execute("""
-                SELECT u.nome, a.comentario, a.nota
+            res = self.cur.execute(f"""
+                SELECT *
+                FROM AVALIACAO
+                WHERE id_avaliacao = {avalId};
+            """)
+            
+            return list(res.fetchall())
+
+        except Exception as e:
+            print(f'ERROR ao retornar avaliacao: {e}')
+            return False
+
+
+    def retornarTodasAvalsUser(self, user):
+        try:
+            res = self.cur.execute(f"""
+                SELECT *
+                FROM AVALIACAO
+                WHERE id_usuario = {user};
+            """)
+
+            return list(res.fetchall())
+
+        except Exception as e:
+            print(f"ERROR ao retronar Avals: {e}")   
+
+    def recupera_todas_avaliacoes_usuario(self, login):
+        try:
+            resposta = self.cur.execute(f"""
+                SELECT u.nome AS nome_user, a.comentario, a.nota, a.data, lt.nome AS nome_local, a.id_avaliacao
                 FROM USUARIO u
                 JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
-                JOIN TURISMO lt ON a.id_local_turistico = lt.id_turismo
-                WHERE lt.nome = ?
-            """, (nome,))
+                JOIN LOCAL_TURISTICO lt ON a.id_local_turistico = lt.id_local_turistico
+                WHERE u.login = '{login}';
+            """)
             return list(resposta.fetchall())
         except Exception as e:
-            print(e)
+            print(f'ERROR ao retornar avals local: {e}')
+            return False
+
+    #retorna todas as avaliacoes de um determinado local turistico
+    #[(Gabriel, "Muito Bom!", 5), (Joao Pedro, "Bom", 4), ...]
+    def recupera_todas_avaliacoes_local(self, ltId):
+        try:
+            resposta = self.cur.execute(f"""
+                SELECT u.nome AS nome_user, a.comentario, a.nota, a.data, lt.nome AS nome_local, a.id_avaliacao
+                FROM USUARIO u
+                JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
+                JOIN LOCAL_TURISTICO lt ON a.id_local_turistico = lt.id_local_turistico
+                WHERE lt.id_local_turistico = '{ltId}';
+            """)
+            return list(resposta.fetchall())
+        except Exception as e:
+            print(f'ERROR ao retornar avals local: {e}')
+            return False
+        
+    def retornaTodasAvals(self):
+        try:
+            resposta = self.cur.execute("""
+                SELECT u.nome AS nome_user, a.comentario, a.nota, a.data, lt.nome AS nome_local, a.id_avaliacao
+                FROM USUARIO u
+                JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
+                JOIN LOCAL_TURISTICO lt ON a.id_local_turistico = lt.id_local_turistico
+            """)
+            return list(resposta.fetchall())
+        
+        except Exception as e:
+            print(f'ERROR ao retornar todas avals: {e}')
             return False

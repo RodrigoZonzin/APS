@@ -1,6 +1,13 @@
 from . import Usuario as u
+from control.controlUser import UsuarioController
+
+control = UsuarioController()
 
 class UsuarioNormal(u.Usuario):
+    # def __init__(self):
+    #     self.avals = control.retornaAllUsers(self.login)
+    #     print(f"asasa: {self.avals}")
+
     def fazerAval(self, aval):
         self.avals.append(aval)
 

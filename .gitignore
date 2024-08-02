@@ -3,6 +3,7 @@
 *.db
 *.db-journal
 *.md
+*.sqbpro
 
 antigos/
 UML/

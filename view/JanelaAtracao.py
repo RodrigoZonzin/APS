@@ -1,10 +1,20 @@
 from tkinter import *
 from PIL import ImageTk, Image
 
+from control.controlUser import UsuarioController
+from control.controlLocalTuristico import LocalTuristicoController
+
+control = UsuarioController()
+controlLt = LocalTuristicoController()
+
 class JanelaAtracao(): 
-    def __init__(self, princ, callback):
+    def __init__(self, princ, callback, user, atrc):
         self.princ = princ
         self.callback = callback
+        self.user = user
+        self.atrc = atrc
+        print(f'atrc: {atrc}')
+        self.coments = controlLt.retornarAvalsLocal(atrc[0])
 
         #CONFIGURACAO DA PÁGINA DE ATRACAO
         self.root = Toplevel(princ)
@@ -56,7 +66,7 @@ class JanelaAtracao():
 
         frameTexto = Frame(
             self.root,
-            bg='gray',
+            bg="#6cbd74",
             width=300,
             height=500
         )
@@ -65,14 +75,14 @@ class JanelaAtracao():
         texto = Label(
             frameTexto, 
             wraplength=600,
-            text= "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ante libero, scelerisque ac posuere in, aliquet et metus. Proin ac rutrum velit. Mauris tempor quis diam vel condimentum. Maecenas id tellus accumsan, imperdiet ex sit amet, facilisis lectus. Mauris facilisis iaculis tincidunt. Aenean a consequat erat. Phasellus auctor est non sapien venenatis commodo. Nunc condimentum, metus nec finibus euismod, magna diam blandit dui, id convallis tortor sapien id risus. Donec tristique sapien ligula, et egestas eros imperdiet semper. Maecenas porta metus id nulla feugiat ultrices. Suspendisse tincidunt, enim facilisis eleifend posuere, lorem sem cursus urna, vel semper odio justo id metus. Etiam mi urna, vestibulum ut nisi a, vehicula dapibus metus. Morbi tincidunt suscipit feugiat. Praesent sed lorem tellus."
+            text=self.atrc[3]
         )
         texto.pack(side='top', fill='y')
 
         #comentarios ficarao nesse frame
         frameComentarios = Frame(
             self.root,
-            bg = 'white',
+            bg="#6cbd74",
             height=100,
             width= 600,
             pady=30
@@ -81,31 +91,113 @@ class JanelaAtracao():
 
         
         #exemplo comentario
-        nota = 3
+        #nota = 3
         
         #comentarios_banco 
-        comentarios_banco = [("Gabriel", "Muito Bom!", 5), ("João Pedro", "Mais ou menos, Poderia ser melhor", 4),("Ian", "Ruim", 1)]
+        #comentarios_banco = [("Gabriel", "Muito Bom!", 5), ("João Pedro", "Mais ou menos, Poderia ser melhor", 4),("Ian", "Ruim", 1)]
         
         #objetos da interface grafica
         comentarios = []
         nomeComentarios = []
         textoComentarios = []
 
-        for i in range(len(comentarios_banco)): 
+        for i, coment in enumerate(self.coments): 
             print(i)
             comentarios.append(Frame(frameComentarios, height=500, width=300))
             comentarios[i].pack(side = 'top')
 
-            nomeComentarios.append(Label(comentarios[i], text=comentarios_banco[i][0], width=20, wraplength = 100))
+            nomeComentarios.append(Label(comentarios[i], text=coment[0], width=20, wraplength = 100))
             nomeComentarios[i].grid(column=0, row=0)
 
-            textoComentarios.append(Label(comentarios[i], text=comentarios_banco[i][1], width=30, wraplength= 300))
+            textoComentarios.append(Label(comentarios[i], text=coment[1], width=30, wraplength= 300))
             textoComentarios[i].grid(column = 1, row = 0)
 
 
-            textoNota = Label(comentarios[i], text=str(comentarios_banco[i][2]), width=10, font=("Arial", 15))
+            textoNota = Label(comentarios[i], text=str(coment[2]), width=10, font=("Arial", 15))
             textoNota.grid(column=2, row= 0)
         
+
+        if self.user != None:
+            corpo = Frame(
+                self.root,
+                bg='#6cbd74'
+            )
+            corpo.pack(pady=10)
+            
+            labelAval = Label(
+                corpo,
+                text='Faça uma avaliação',
+                bg='#6cbd74',
+                font=('Verdana', '15')
+            )
+            labelAval.pack()
+
+            btnFrame = Frame(
+                corpo,
+                bg='#6cbd74'
+            )
+            btnFrame.pack(pady=7)
+
+            lNota = Label(
+                btnFrame,
+                text='Nota:',
+                bg='#6cbd74',
+                font=('Verdana', '12')
+            )
+            lNota.pack(side='left', padx=7)
+
+            self.variable = StringVar(btnFrame)
+            self.variable.set('-')
+            options = ['1','2','3','4','5','6','7','8','9','10']
+
+            opMenu = OptionMenu(
+                btnFrame,
+                self.variable,
+                *options
+            )
+            opMenu.pack(side='left', padx=7)
+
+            self.entry = Text(
+                btnFrame,
+                width=50,
+                height=5
+            )
+            self.entry.pack(side='left', padx=7)
+
+            btnEnviar = Button(
+                btnFrame,
+                text='Enviar',
+                command=self.enviarAvaliacao,
+                font=('Verdana', '12')
+            )
+            btnEnviar.pack(side='left', padx=7)
+
+
+    def enviarAvaliacao(self):
+        nota = int(self.variable.get())
+        res = control.fazerAvaliacao(self.user, (int(self.user.id), nota, self.atrc[0], '2024-08-02', self.entry.get("1.0", END).strip()))
+        if res:
+            alert = Toplevel(self.root, bg="#6cbd74")
+            alert.title('Alerta')
+            alert.geometry('315x120')
+
+            fAlert = Frame(alert, bg="#6cbd74")
+            fAlert.pack(pady=40)
+            
+            lAlert = Label(fAlert, text='Avaliação feita com sucesso!', bg="#6cbd74")
+            lAlert.pack()
+
+        else:
+            alert = Toplevel(self.root, bg="#6cbd74")
+            alert.title('Alerta')
+            alert.geometry('315x120')
+
+            fAlert = Frame(alert, bg="#6cbd74")
+            fAlert.pack(pady=40)
+            
+            lAlert = Label(fAlert, text='Ocorreu um erro ao fazer a avaliação', bg="#6cbd74")
+            lAlert.pack()
+
 
     def voltarJenelaPrin(self):
         self.princ.deiconify()

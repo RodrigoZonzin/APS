@@ -5,8 +5,6 @@ import pandas as pd
 from control import controle as ct
 from . import JanelaLogin as jl
 from . import JanelaRegistrar as jr
-from . import JanelaInserirLocal as ji
-from . import JanelaDeletarLocal as jd
 from . import JanelaBuscar as jb
 from . import JanelaUsuarioNormal as ju
 from . import JanelaUsuarioAdm as jua
@@ -15,12 +13,17 @@ from . import JanelaAtracao as ja
 controladorLocalTuristico = ct.LocalTuristicoController()
 controladorUsuario = ct.UsuarioController()
 
+from control.controlLocalTuristico import LocalTuristicoController as lt
+controlLt = lt()
 
 class Janela:
     def __init__(self): 
         self.root = Tk()
         self.isLogged = False
         self.user = StringVar()
+        self.userClass = None
+
+        self.locais = controlLt.retornaTodosLocais()
 
         #CONFIGURAÇÃO DA PÁGINA PRINCIPAL
         self.root.title("Empresa de Turismo")
@@ -86,9 +89,9 @@ class Janela:
         ).pack(side='right', padx=5)
 
         #BOTÕES DE ALTERAR A TABELA DE LOCAIS/ATRAÇÕES
-        self.fButtun = Frame(self.root).pack(side='top')
-        Button(self.fButtun, text='Registar Local', command=self.chamarInsercaoTL).pack(side='top')
-        Button(self.fButtun, text='Deletar Local', command=jd.JanelaDeletarLocal).pack(side='top')
+        # self.fButtun = Frame(self.root).pack(side='top')
+        # Button(self.fButtun, text='Registar Local', command=self.chamarInsercaoTL).pack(side='top')
+        # Button(self.fButtun, text='Deletar Local', command=jd.JanelaDeletarLocal).pack(side='top')
 
         #CONTAINER QUE CONTERÁ A LISTAGEM DE ATRAÇÕES TURISTICAS
         self.frameListagemAtracoes = Frame(
@@ -119,7 +122,7 @@ class Janela:
         self.botaoAtracoes = []
         self.txtAtracoes = []
 
-        for i, row in enumerate(infoCidades.itertuples()): 
+        for i, row in enumerate(self.locais): 
             self.Atracaoes.append(Frame(self.frameListagemAtracoes, pady=10))
             self.Atracaoes[i]['background'] = "gray"
             self.Atracaoes[i]['height'] = 100
@@ -136,11 +139,11 @@ class Janela:
             self.campoAtracoes[i].grid(column=1, row=0)
 
             #botao 'conheca tal lugar' para redirecionar a pagina
-            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row.Nome}', command = self.chamarTelaAtracoes))
+            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row[1]}', command = lambda atrc=row :self.chamarTelaAtracoes(atrc)))
             self.botaoAtracoes[i].pack(side='top')
 
             #breve descrição da atracao turistica
-            self.txtAtracoes.append(Label(self.campoAtracoes[i], wraplength=200, width=50, text=f"{row.Descricao}", bg="yellow"))
+            self.txtAtracoes.append(Label(self.campoAtracoes[i], wraplength=200, width=50, text=f"{row[3]}", bg="yellow"))
             self.txtAtracoes[i].pack()  
 
 
@@ -202,9 +205,6 @@ class Janela:
             ju.JanelaUsuarioNormal(self.root, self.userClass)
         #print('Fazer tela user')
 
-    def chamarTelaAtracoes(self): 
+    def chamarTelaAtracoes(self, atrc): 
         self.root.withdraw()
-        self.janelaLog = ja.JanelaAtracao(self.root, self.callbackAtracoes)
-  
-    def chamarInsercaoTL(self):
-        ji.JanelaInserirLocal(self.root)
+        self.janelaLog = ja.JanelaAtracao(self.root, self.callbackAtracoes, self.userClass, atrc)

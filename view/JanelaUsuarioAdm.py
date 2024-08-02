@@ -1,14 +1,19 @@
 from tkinter import *
+from . import JanelaInserirLocal as ji
+from . import JanelaDeletarLocal as jd
 
 from control.controlUser import UsuarioController
+from control.controlAvalicao import AvaliacaoController
 
 control = UsuarioController()
+controlA = AvaliacaoController()
 
 class JanelaUsuarioAdm():
     def __init__(self, princ, user):
         self.princ = princ
         self.user = user
         self.allUsers = control.retornaAllUsers()
+        self.tabelaAtiva = -1 # -1=nenhuma, 0=users, 1=avaliações
 
         self.root = Toplevel(self.princ)
         self.root.title("Janela do Usuário")
@@ -69,7 +74,7 @@ class JanelaUsuarioAdm():
         btnAvals = Button(
             btnFr,
             text='Avaliações',
-            command=self.destroiTabela, #teste
+            command=self.tabelaAvaliacao,
             width=10
         )
         btnAvals.pack(pady=5, side='left')
@@ -90,6 +95,21 @@ class JanelaUsuarioAdm():
         )
         btnRotas.pack(pady=5, side='left')
 
+        btnAddLT = Button(
+            btnFr, 
+            text='Registar Local', 
+            command=self.chamarInsercaoTL,
+            width=10
+        )
+        btnAddLT.pack(side='left')
+        btnRemoveLT = Button(
+            btnFr, 
+            text='Deletar Local', 
+            command=jd.JanelaDeletarLocal,
+            width=10
+        )
+        btnRemoveLT.pack(side='left')
+
         self.frLista = Frame(
             corpo,
             bg="#6cbd74",
@@ -108,9 +128,53 @@ class JanelaUsuarioAdm():
 
         self.tabelaUsers()
 
+    def chamarInsercaoTL(self):
+        ji.JanelaInserirLocal(self.root)
 
     def destroiTabela(self):
-        for i in range(len(self.listFr)):
+        if self.tabelaAtiva == 0:
+            for i in range(len(self.listFr)):
+                self.listFr[i].destroy()
+                self.nomes[i].destroy()
+                self.logins[i].destroy()
+                self.adms[i].destroy()
+                self.btnsExcluir[i].destroy()
+                self.btnsAdm[i].destroy()
+
+            self.listFr = []
+            self.nomes = []
+            self.logins = []
+            self.adms = []
+            self.btnsExcluir = []
+            self.btnsAdm = []
+
+        elif self.tabelaAtiva == 1:
+            for i in range(len(self.listAvalsFr)):
+                self.listAvalsFr[i].destroy()
+                self.fr1[i].destroy()
+                self.fr2[i].destroy()
+                self.locais[i].destroy()
+                #self.dataH[i].destroy()
+                #self.comentario[i].destroy()
+                self.nota[i].destroy()
+                self.users[i].destroy() 
+                self.btnVer[i].destroy()
+                self.btnApagar[i].destroy()
+
+            self.listAvalsFr = []
+            self.fr1 = []
+            self.fr2 = []
+            self.locais = []
+            self.dataH = []
+            self.comentario = []
+            self.nota = []
+            self.users = [] 
+            self.btnVer = []
+            self.btnApagar = []
+
+    def destroiLinhaTabela(self, i, idAval, userId):
+        if self.tabelaAtiva == 0:
+            #Apaga usuario
             self.listFr[i].destroy()
             self.nomes[i].destroy()
             self.logins[i].destroy()
@@ -118,30 +182,42 @@ class JanelaUsuarioAdm():
             self.btnsExcluir[i].destroy()
             self.btnsAdm[i].destroy()
 
-        self.listFr = []
-        self.nomes = []
-        self.logins = []
-        self.adms = []
-        self.btnsExcluir = []
-        self.btnsAdm = []
+            self.listFr.pop(i)
+            self.nomes.pop(i)
+            self.logins.pop(i)
+            self.adms.pop(i)
+            self.btnsExcluir.pop(i)
+            self.btnsAdm.pop(i)
 
-    def destroiLinhaTabela(self, i):
-        self.listFr[i].destroy()
-        self.nomes[i].destroy()
-        self.logins[i].destroy()
-        self.adms[i].destroy()
-        self.btnsExcluir[i].destroy()
-        self.btnsAdm[i].destroy()
+        elif self.tabelaAtiva == 1:
+            #apaga avaliação
+            control.apagarAvaliacaoId(idAval, userId)
+            
+            self.listAvalsFr[i].destroy()
+            self.fr1[i].destroy()
+            self.fr2[i].destroy()
+            self.locais[i].destroy()
+            # self.dataH[i].destroy()
+            # self.comentario[i].destroy()
+            self.nota[i].destroy()
+            self.users[i].destroy() 
+            self.btnVer[i].destroy()
+            self.btnApagar[i].destroy()
 
-        self.listFr.pop(i)
-        self.nomes.pop(i)
-        self.logins.pop(i)
-        self.adms.pop(i)
-        self.btnsExcluir.pop(i)
-        self.btnsAdm.pop(i)
+            self.listAvalsFr.pop(i)
+            self.fr1.pop(i)
+            self.fr2.pop(i)
+            self.locais.pop(i)
+            # self.dataH.pop(i)
+            # self.comentario.pop(i)
+            self.nota.pop(i)
+            self.users.pop(i) 
+            self.btnVer.pop(i)
+            self.btnApagar.pop(i)
 
     def tabelaUsers(self):
         self.destroiTabela()
+        self.tabelaAtiva = 0
 
         for i, item in enumerate(self.allUsers):
             self.listFr.append(Frame(
@@ -206,6 +282,100 @@ class JanelaUsuarioAdm():
                     text='Tirar Adm',
                 )
 
+    def tabelaAvaliacao(self):
+        self.destroiTabela()
+        self.tabelaAtiva = 1
+
+        avals = controlA.retornaTodasAvals()
+
+        self.listAvalsFr = []
+        self.fr1 = []
+        self.fr2 = []
+        self.locais = []
+        self.dataH = []
+        self.comentario = []
+        self.nota = []
+        self.users = [] 
+        self.btnVer = []
+        self.btnApagar = []
+
+        for i, aval in enumerate(avals):
+            self.listAvalsFr.append(Frame(
+                self.frLista,
+                bg='gray',
+                height=200,
+            ))
+            self.listAvalsFr[i].pack(fill="x")
+
+            self.fr1.append(Frame(
+                self.listAvalsFr[i],
+                bg='gray'
+            ))
+            self.fr1[i].pack(fill="x")
+
+            self.fr2.append(Frame(
+                self.listAvalsFr[i],
+                bg='gray'
+            ))
+            self.fr2[i].pack(fill="x")
+
+            self.locais.append(Label(
+                self.fr1[i],
+                text=aval[4],
+                bg='gray',
+                font=('Verdana', '12')
+            ))
+            self.locais[i].pack(side="left", padx=5)
+
+            self.users.append(Label(
+                self.fr2[i],
+                text=f'user: {aval[0]}',
+                bg='gray',
+                font=('Verdana', '12')
+            ))
+            self.users[i].pack(side="left", padx=5)
+
+            '''self.dataH.append(Label(
+                self.fr1[i],
+                text=aval[3],
+                bg='gray',
+                font=('Verdana', '12')
+            ))
+            self.dataH[i].pack(side="left", padx=5)'''
+
+            '''self.comentario.append(Label(
+                self.fr2[i],
+                text=f'Comentário: "{aval[1]}"',
+                bg='gray',
+                font=('Verdana', '12')
+            ))
+            self.comentario[i].pack(side="left", padx=5)'''
+
+            self.nota.append(Label(
+                self.fr2[i],
+                text=f"Nota: {aval[2]}",
+                bg='gray',
+                font=('Verdana', '12')
+            ))
+            self.nota[i].pack(side="left", padx=5)
+
+            self.btnVer.append(Button(
+                self.fr1[i],
+                text='Ver mais',
+                width=10,
+                command=lambda a=aval: self.verMais(a)
+            ))
+            self.btnVer[i].pack(side="right")
+
+            self.btnApagar.append(Button(
+                self.fr2[i],
+                text='Apagar',
+                width=10,
+                command=lambda user=aval[0], i=i, idA = aval[5]: self.destroiLinhaTabela(i, idA, user)
+            ))
+            self.btnApagar[i].pack(side="right")
+
+
     def chamarMudarAdm(self, i, login, index):
         if login == self.user.login:
             print("ERROR: Tentando se alterar")
@@ -230,6 +400,57 @@ class JanelaUsuarioAdm():
 
         if res == 200:
             self.destroiLinhaTabela(i)
+
+    def verMais(self, aval):
+        vMais = Toplevel(self.root)
+        vMais.title('Ver Avaliação')
+        vMais.geometry('500x350')
+        vMais.config(bg="#6cbd74")
+
+        fr = Frame(
+            vMais,
+            bg="#6cbd74"
+        )
+        fr.pack(pady=15)
+
+        nome = Label(
+            fr,
+            text=f'Local: {aval[4]}',
+            bg="#6cbd74",
+            font=('Verdana', '12')
+        )
+        nome.pack(pady=7)
+
+        nota = Label(
+            fr,
+            text=f'Nota: {aval[2]}',
+            bg="#6cbd74",
+            font=('Verdana', '12')
+        )
+        nota.pack(pady=7)
+
+        coment = Label(
+            fr,
+            text=f'Comentário: "{aval[1]}"',
+            bg="#6cbd74",
+            font=('Verdana', '12')
+        )
+        coment.pack(pady=7)
+
+        dataHora = Label(
+            fr,
+            text=f'Data da Avaliação: {aval[3]}',
+            bg="#6cbd74",
+            font=('Verdana', '12')
+        )
+        dataHora.pack(pady=7)
+
+        btn = Button(
+            fr,
+            text='Fechar',
+            command=vMais.destroy
+        )
+        btn.pack(pady=7)
 
     def voltarJanelaPrin(self):
         self.princ.deiconify()
