@@ -95,7 +95,7 @@ class Banco:
                 "INSERT INTO USUARIO(id_usuario, nome, login, senha, is_admin) VALUES (NULL, ?, ?, ?, ?)",
                 dados);
             print(dados)
-        
+            self.commit()
         except sqlite3.IntegrityError as e:
             print("ERRO de integridade chave primaria ou unique")
 
