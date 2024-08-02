@@ -49,11 +49,13 @@ class UsuarioController:
         return user
 
     def apagarAvaliacao(self, userId, aval):
+        print(f'aaa: {aval}')
         #apagar no bd do usuario
-        controlA.apagar_avaliacao(aval.id)
+        controlA.apagar_avaliacao(aval[5])
 
         #atualizando o model do usuario
-        user = banco.procura_usuario_login(userId)
+        print('dad?',userId.login)
+        user = banco.procura_usuario_login(userId.login)
         print(f'user? {user}')
         userClass = un.UsuarioNormal(user[0], user[1], user[2], user[3], user[4])
 
