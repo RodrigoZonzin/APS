@@ -3,9 +3,11 @@ from PIL import ImageTk, Image
 
 from control.controlUser import UsuarioController
 from control.controlLocalTuristico import LocalTuristicoController
+from control.controlAvalicao import AvaliacaoController
 
 control = UsuarioController()
 controlLt = LocalTuristicoController()
+controlA = AvaliacaoController()
 
 class JanelaAtracao(): 
     def __init__(self, princ, callback, user, atrc):
@@ -175,28 +177,30 @@ class JanelaAtracao():
 
     def enviarAvaliacao(self):
         nota = int(self.variable.get())
-        res = control.fazerAvaliacao(self.user, (int(self.user.id), nota, self.atrc[0], '2024-08-02', self.entry.get("1.0", END).strip()))
+        res = controlA.adicionar_avaliacao((int(self.user.id), nota, self.atrc[0], '2024-08-02', self.entry.get("1.0", END).strip()))
         if res:
-            alert = Toplevel(self.root, bg="#6cbd74")
-            alert.title('Alerta')
-            alert.geometry('315x120')
+            res = control.fazerAvaliacao(self.user, (int(self.user.id), nota, self.atrc[0], '2024-08-02', self.entry.get("1.0", END).strip()))
+            if res:
+                alert = Toplevel(self.root, bg="#6cbd74")
+                alert.title('Alerta')
+                alert.geometry('315x120')
 
-            fAlert = Frame(alert, bg="#6cbd74")
-            fAlert.pack(pady=40)
-            
-            lAlert = Label(fAlert, text='Avaliação feita com sucesso!', bg="#6cbd74")
-            lAlert.pack()
+                fAlert = Frame(alert, bg="#6cbd74")
+                fAlert.pack(pady=40)
+                
+                lAlert = Label(fAlert, text='Avaliação feita com sucesso!', bg="#6cbd74")
+                lAlert.pack()
 
-        else:
-            alert = Toplevel(self.root, bg="#6cbd74")
-            alert.title('Alerta')
-            alert.geometry('315x120')
+            else:
+                alert = Toplevel(self.root, bg="#6cbd74")
+                alert.title('Alerta')
+                alert.geometry('315x120')
 
-            fAlert = Frame(alert, bg="#6cbd74")
-            fAlert.pack(pady=40)
-            
-            lAlert = Label(fAlert, text='Ocorreu um erro ao fazer a avaliação', bg="#6cbd74")
-            lAlert.pack()
+                fAlert = Frame(alert, bg="#6cbd74")
+                fAlert.pack(pady=40)
+                
+                lAlert = Label(fAlert, text='Ocorreu um erro ao fazer a avaliação', bg="#6cbd74")
+                lAlert.pack()
 
 
     def voltarJenelaPrin(self):

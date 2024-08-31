@@ -14,17 +14,17 @@ def iniciaBd():
     # banco.insere_usuario([("a", "a", "a", 1)])
     # banco.insere_usuario([("b", "b", "b", 0)])
     #
-    #banco.inserir_local_turistico(["DCOMP", "Av. do Bengo, 4125, SJDR", "Campus Tancredo Never"])
-    #banco.inserir_local_turistico(["Maria Fumaça", "Av. Centro, 123, SJDR", "Venha ver a Maria Fumaça"])
+    # banco.inserir_local_turistico(["DCOMP", "Av. do Bengo, 4125, SJDR", "Campus Tancredo Never"])
+    # banco.inserir_local_turistico(["Maria Fumaça", "Av. Centro, 123, SJDR", "Venha ver a Maria Fumaça"])
     #banco.inserir_local_turistico(["Igreja do Carmo", "Av. Centro, 456, SJDR", "Actiones praejudiciales in Dei"])
     #
     #print(banco.procura_usuario_login("rodrigozonzin.com"))
     #banco.fazer_login('a', 'a')
 
     #id_avaliacao, id_usuario, nota, id_local_turistico, data, comentario)
-    # banco.insere_avaliacao([2, 5, 1, '2024-05-23', "Muito Bom memso PArabens Eh isso ai!"])
-    #banco.insere_avaliacao([2, 5, 1, '2024-05-28', "Bom demaiiiiis memso PArabens Eh isso ai!"])
-    #banco.insere_avaliacao([2, 1, 1, '2024-05-23', "Muito Ruim!"])
+    # banco.insere_avaliacao([1, 5, 1, '2024-05-23', "Muito Bom memso PArabens Eh isso ai!"])
+    # banco.insere_avaliacao([1, 5, 1, '2024-05-28', "Bom demaiiiiis memso PArabens Eh isso ai!"])
+    # banco.insere_avaliacao([100, 1, 2, '2024-05-23', "Muito Ruim!"])
 
     #banco.insere_avaliacao([
     #    (1, 5, 1, '2024-05-23', "Muito Bom memso PArabens Eh isso ai!"),

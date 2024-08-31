@@ -5,14 +5,14 @@ from . import JanelaDeletarLocal as jd
 from control.controlUser import UsuarioController
 from control.controlAvalicao import AvaliacaoController
 
-control = UsuarioController()
+controlU = UsuarioController()
 controlA = AvaliacaoController()
 
 class JanelaUsuarioAdm():
     def __init__(self, princ, user):
         self.princ = princ
         self.user = user
-        self.allUsers = control.retornaAllUsers()
+        self.allUsers = controlU.retornaAllUsers()
         self.tabelaAtiva = -1 # -1=nenhuma, 0=users, 1=avaliações
 
         self.root = Toplevel(self.princ)
@@ -172,7 +172,7 @@ class JanelaUsuarioAdm():
             self.btnVer = []
             self.btnApagar = []
 
-    def destroiLinhaTabela(self, i, idAval, userId):
+    def destroiLinhaTabela(self, i, aval, user):
         if self.tabelaAtiva == 0:
             #Apaga usuario
             self.listFr[i].destroy()
@@ -190,30 +190,39 @@ class JanelaUsuarioAdm():
             self.btnsAdm.pop(i)
 
         elif self.tabelaAtiva == 1:
-            #apaga avaliação
-            control.apagarAvaliacaoId(idAval, userId)
-            
+            #apaga avaliação no bd
+            controlU.apagarAvaliacaoAdm(self.user, aval)
+
+            #apagar no model User- Olhar depois se vai ser necessario
+
+
+            # controlU.apagarAvaliacao(user, aval)
             self.listAvalsFr[i].destroy()
             self.fr1[i].destroy()
             self.fr2[i].destroy()
             self.locais[i].destroy()
-            # self.dataH[i].destroy()
-            # self.comentario[i].destroy()
             self.nota[i].destroy()
             self.users[i].destroy() 
             self.btnVer[i].destroy()
             self.btnApagar[i].destroy()
 
-            self.listAvalsFr.pop(i)
-            self.fr1.pop(i)
-            self.fr2.pop(i)
-            self.locais.pop(i)
-            # self.dataH.pop(i)
-            # self.comentario.pop(i)
-            self.nota.pop(i)
-            self.users.pop(i) 
-            self.btnVer.pop(i)
-            self.btnApagar.pop(i)
+            # self.listAvalsFr.pop(i)
+            # self.fr1.pop(i)
+            # self.fr2.pop(i)
+            # self.locais.pop(i)
+            # self.nota.pop(i)
+            # self.users.pop(i) 
+            # self.btnVer.pop(i)
+            # self.btnApagar.pop(i)
+
+            self.listAvalsFr[i] = None
+            self.fr1[i] = None
+            self.fr2[i] = None
+            self.locais[i] = None
+            self.nota[i] = None
+            self.users[i] = None 
+            self.btnVer[i] = None
+            self.btnApagar[i] = None
 
     def tabelaUsers(self):
         self.destroiTabela()
@@ -321,7 +330,7 @@ class JanelaUsuarioAdm():
 
             self.locais.append(Label(
                 self.fr1[i],
-                text=aval[4],
+                text=aval.LocalAtracao.nome,
                 bg='gray',
                 font=('Verdana', '12')
             ))
@@ -329,7 +338,7 @@ class JanelaUsuarioAdm():
 
             self.users.append(Label(
                 self.fr2[i],
-                text=f'user: {aval[0]}',
+                text=f'user: {aval.Autor.login}',
                 bg='gray',
                 font=('Verdana', '12')
             ))
@@ -353,7 +362,7 @@ class JanelaUsuarioAdm():
 
             self.nota.append(Label(
                 self.fr2[i],
-                text=f"Nota: {aval[2]}",
+                text=f"Nota: {aval.nota}",
                 bg='gray',
                 font=('Verdana', '12')
             ))
@@ -371,7 +380,7 @@ class JanelaUsuarioAdm():
                 self.fr2[i],
                 text='Apagar',
                 width=10,
-                command=lambda user=aval[0], i=i, idA = aval[5]: self.destroiLinhaTabela(i, idA, user)
+                command=lambda user=aval.Autor, i=i, aval = aval: self.destroiLinhaTabela(i, aval, user)
             ))
             self.btnApagar[i].pack(side="right")
 
@@ -381,7 +390,7 @@ class JanelaUsuarioAdm():
             print("ERROR: Tentando se alterar")
             return
         
-        res = control.mudarAdm(login, i)
+        res = controlU.mudarAdm(login, i)
 
         if res == 200:
             if i == 0:
@@ -396,10 +405,10 @@ class JanelaUsuarioAdm():
             print("ERROR: Tentando se apagar")
             return
 
-        res = control.apagar_usuario(login)
+        res = controlU.apagar_usuario(login)
 
         if res == 200:
-            self.destroiLinhaTabela(i)
+            self.destroiLinhaTabela(i, None, None) #colocar os outros paramentros aqui
 
     def verMais(self, aval):
         vMais = Toplevel(self.root)
@@ -415,7 +424,7 @@ class JanelaUsuarioAdm():
 
         nome = Label(
             fr,
-            text=f'Local: {aval[4]}',
+            text=f'Local: {aval.LocalAtracao.nome}',
             bg="#6cbd74",
             font=('Verdana', '12')
         )
@@ -423,7 +432,7 @@ class JanelaUsuarioAdm():
 
         nota = Label(
             fr,
-            text=f'Nota: {aval[2]}',
+            text=f'Nota: {aval.nota}',
             bg="#6cbd74",
             font=('Verdana', '12')
         )
@@ -431,7 +440,7 @@ class JanelaUsuarioAdm():
 
         coment = Label(
             fr,
-            text=f'Comentário: "{aval[1]}"',
+            text=f'Comentário: "{aval.coment}"',
             bg="#6cbd74",
             font=('Verdana', '12')
         )
@@ -439,7 +448,7 @@ class JanelaUsuarioAdm():
 
         dataHora = Label(
             fr,
-            text=f'Data da Avaliação: {aval[3]}',
+            text=f'Data da Avaliação: {aval.dataHora}',
             bg="#6cbd74",
             font=('Verdana', '12')
         )

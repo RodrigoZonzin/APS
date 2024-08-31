@@ -1,30 +1,41 @@
-Não pode ter cadastre-se no diagrama de casos de uso 
+Erro ao apagar usuário, pois as avaliações ainda existem  - RESOLVIDO
 
-Colocar uma seta direta para o login pois, para o login, não é preciso haver o cadastro uma vez que o usuário já está cadastrado 
+Ver se precisa ter um vetor de avals no user
 
-Não é preciso ter o alterar
+Arrumar tornar adm que n funcionar 2x seguidas no msm user
 
-No diagrama de casos de uso, add comentário sobre a avaliação turística
+Não precisa ter adicionar comentário nos casos de uso
 
-Avaliação pode ser uma classe com atributos Nota e Comentário 
+Adicionar uma busca na hora de apagar local turístico (ou tirar do diagrama de caso de uso). Está inconsistente o código com o diagrama 
 
-Usuário seria uma seta direta para o local mais bem avaliado 
+Se colocar o "calcular rota", tem que ter um botão pra isso. Se não precisar, e for apagar pelo ID direto, não há necessidade de ter o balãozinho 
 
+Alterar o label do "Cadastrar" p "Cadastrar usuário" 
 
-Nenhum dos métodos na classe Usuário deveria estar aí (apagar, buscar) e etc. Devem estar nas camadas de modelo, visão ou etc. 
+Label tem que ser completo: "Avaliação do Local", "Cadastrar Usuário", etc
 
-Não tem nome do atributo nas seringas da relações no diagrama de classes 
+Matheus sugere mudar para que o usuário possa adicionar uma rota turística 
 
-Matheus recomenda q a Avaliação tenha o atributo Usuário. (Comentário deve ser apagado pois Avaliação conterá o comentário). 
+Diagrama da camada de modelo tem que ter todas as classes da camada de modelo. 
 
-Rota não é relação todo-parte. Inverter a seta. A Rota que tem a Atração. 
+Diagrama de todas as camadas para uma classe (Usuário, Avaliação ou Local Turístico)
 
-No diagrama maior. Persistência deve conversar com Controle e Visão. Controle com Modelo. 
+O diagrama de modelo está errado: comentário é apenas um atributo de avaliação. 
 
-O estado 'está logado' não faz diferença no código atual. A Tela não tem funcionalidade nova depois do Login. 
+Colocar na classe avaliação um atributo com o objetivo usuário(classe mãe) e n só seu id. Mas mantém o id na tabela avaliação do BD. Fazer a msm coisa para local turístico 
 
-Cada janela tem que ser uma classe separada. 
+Tá faltando a setinha para avaliação, local turístico, atração turistica 
 
-Os métodos das classes JanelaPrincipal (e outras) não estão no diagrama. 
+Arrumar o diagrama de pacote para colocar a depencia(linha tracejada com seta) ao invés da associação (olhar certinho)
 
-Persistência, Modelo e Visão têm que ter arquivos separados!!!
+Fazer o diagrama de pacotes de uma entidade. Ex: usuárioNormal
+
+Tem que corrigir o diagrama de comunicação. Não entregamos dessa vez
+
+Diagrama de estados está Ok. Não precisa mudar. 
+
+Diagrama de atividades mudar o label "enviar" para "persistir". Não tem receber local turístico. 
+
+Necessidade de descrever melhor as atividades (clicar botão -> preencher dados -> etc )
+
+Diagrama de Implantação deixar somente uma máquina.

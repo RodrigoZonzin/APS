@@ -1,16 +1,25 @@
-from persistencia.PersistenciaUsuarioNormal import *
+# from persistencia.PersistenciaUsuarioNormal import *
+from model import Usuario as u
 from model import UsuarioNormal as un
-from model import Avaliacao as av
+from model import UsuarioAdm as ua
 from persistencia.banco import banco as b
-from . import controlAvalicao as ca
+# from . import controlAvalicao as ca
 
-persist = PersistenciaUsuario()
+# persist = PersistenciaUsuario()
 banco = b.Banco()
-controlA = ca.AvaliacaoController()
+# controlA = ca.AvaliacaoController()
 
 class UsuarioController:
     def __init__(self):
         pass
+
+    def criaUser(self, data, type):
+        if type == 0:
+            return u.Usuario(data[0], data[1], data[2], data[3], data[4])
+        elif type == 1:
+            return un.UsuarioNormal(data[0], data[1], data[2], data[3], data[4])
+        elif type == 2:
+            return ua.UsuarioAdm(data[0], data[1], data[2], data[3], data[4])
 
     #Cadastrar
     def adicionar_usuario(self, nome, login, senha):
@@ -29,54 +38,50 @@ class UsuarioController:
         #Verifica se o usuario existe
         if user != 400 and user != 500:
             print("usuario: ", user)
-            #arrumar depois para adicionar o id no objeto usuario
-            user = un.UsuarioNormal(user[0], user[1], user[2], user[3], user[4])
+            if user[4] == 0:
+                user = un.UsuarioNormal(user[0], user[1], user[2], user[3], user[4])
+            else:
+                user = ua.UsuarioAdm(user[0], user[1], user[2], user[3], user[4])
             user.avals = self.recuperaAllAvals(user.login)
             return user
         
         return None
 
     #aval = (id, loginAutor, nota, idLocalAtracao, dataHora, coment)
-    def fazerAvaliacao(self, user, aval: tuple): #user é um objeto da classe Usuario
-        #salvar no bd do usuario
-        controlA.adicionar_avaliacao(aval)
+    # def fazerAvaliacao(self, user, aval: tuple): #user é um objeto da classe Usuario
+    #     #salvar no bd do usuario
+    #     #controlA.adicionar_avaliacao(aval)
         
-        #atualizando o model do usuario
-        avaliacao = av.Avaliacao(*aval)
-        user.fazerAval(avaliacao)
+    #     #atualizando o model do usuario
+    #     avaliacao = av.Avaliacao(*aval)
+    #     user.fazerAval(avaliacao)
 
         
+    #     return user
+
+    def apagarAvaliacao(self, user, aval):
+        #apaga aval do model do usuario
+        user.apagarAval(aval)
         return user
 
-    def apagarAvaliacao(self, userId, aval):
-        print(f'aaa: {aval}')
-        #apagar no bd do usuario
-        controlA.apagar_avaliacao(aval[5])
+    def apagarAvaliacaoAdm(self, user, aval):
+        res = user.apagarAvals(aval)
+        return res
 
-        #atualizando o model do usuario
-        print('dad?',userId.login)
-        user = banco.procura_usuario_login(userId.login)
-        print(f'user? {user}')
-        userClass = un.UsuarioNormal(user[0], user[1], user[2], user[3], user[4])
+    # def apagarAvaliacaoId(self, avalId, userId):
+    #     controlA.apagar_avaliacao(avalId)
 
-        userClass.apagarAval(aval)
+    #     user = banco.procura_usuario_login(userId)
+    #     if user:
+    #         userClass = un.UsuarioNormal(user[0], user[1], user[2], user[3], user[4])
 
-        return userClass
+    #         aval = banco.retornaAvalId(avalId)
+    #         print(f'aadawdada: {aval}, {avalId}')
+    #         userClass.apagarAval(aval)
 
-    def apagarAvaliacaoId(self, avalId, userId):
-        controlA.apagar_avaliacao(avalId)
-
-        user = banco.procura_usuario_login(userId)
-        if user:
-            userClass = un.UsuarioNormal(user[0], user[1], user[2], user[3], user[4])
-
-            aval = banco.retornaAvalId(avalId)
-            print(f'aadawdada: {aval}, {avalId}')
-            userClass.apagarAval(aval)
-
-            return userClass
-        else:
-            return False
+    #         return userClass
+    #     else:
+    #         return False
 
     def recuperaAllAvals(self, user):
         aval = banco.recupera_todas_avaliacoes_usuario(user)
@@ -94,7 +99,7 @@ class UsuarioController:
             print("Erro ao recuperar usuarios")
 
     def buscar_usuario(self, login):
-        res = banco.procura_usuario_login(login)
+        res = banco.recupera_usuario_login(login)
         return res
 
     def mudarAdm(self, login, isAdm):
@@ -103,6 +108,9 @@ class UsuarioController:
         return res
 
     def apagar_usuario(self, login):
-       res = banco.excluir_usuario(login)
+       #apaga todas as avaliacoes deste usuario antes de apagar o usuario
+        if not banco.exclui_todasAval_user(login):
+            return False
 
-       return res
+        res = banco.excluir_usuario(login)
+        return res

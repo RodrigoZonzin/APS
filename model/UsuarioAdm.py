@@ -1,24 +1,19 @@
-from Usuario import Usuario
+from . import Usuario as u
 
-class UsuarioAdm(Usuario):
-    '''def __init__(self, id, nome, login, senha, isAdmin = True):
-        self.id = id
-        self.nome = nome
-        self.login = login
-        id.senha = senha
-        id.isAdmin = isAdmin'''
 
+class UsuarioAdm(u.Usuario):
     #metodos unicos dessa classe
-    def gerenciarUsuarios(self):
+    def apagarUser(self, user):
         return
     
-    def gerenciarComents(self):
-        #talvez n precise
-        return
+    def apagarAvals(self, aval):
+        from control.controlAvalicao import AvaliacaoController #importação local para evitar erro de importação circular
+        controlA = AvaliacaoController()
+
+        res = controlA.apagar_avaliacao(aval.id)
+        return res
     
-    def gerenciarAvals(self):
-        return
-    
+
     def gerenciarLocais(self):
         return
     
@@ -30,30 +25,33 @@ class UsuarioAdm(Usuario):
     
 
 
-    def alterarNome(self, nomeNovo):
-        self.nome = nomeNovo    
+    # def alterarNome(self, nomeNovo):
+    #     self.nome = nomeNovo    
         
-    def alteraLogin(self, novoLogin):
-        self.login = novoLogin
+    # def alteraLogin(self, novoLogin):
+    #     self.login = novoLogin
 
-    def alteraSenha(self, novaSenha):
-        self.senha = novaSenha
+    # def alteraSenha(self, novaSenha):
+    #     self.senha = novaSenha
 
-    def gerencairSeusComents(self):
-        return
+    # def gerenciarSeusComents(self):
+    #     return
     
-    def gerenciarSuasAvals(self):
-        return
+    # def gerenciarSuasAvals(self):
+    #     return
     
-    def buscarComent(self):
-        return
+    # def buscarComent(self):
+    #     return
     
-    def buscarAval(self):
-        return
+    # def buscarAval(self):
+    #     return
     
-    def fazerComent(self):
-        return
+    # def fazerComent(self):
+    #     return
     
-    def fazerAval(self):
-        return
+    # def fazerAval(self):
+    #     return
+
+    # def alterarSuasInfos(self):
+    #     return
     

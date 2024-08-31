@@ -1,46 +1,46 @@
 class Avaliacao:
-    def __init__(self, idAutor, nota, idLocalAtracao, dataHora, coment, id=-1):
-        self._id = id
-        self._idAutor = idAutor
-        self._nota = nota
-        self._idLocalAtracao = idLocalAtracao
-        self._dataHora = dataHora
-        self._coment = coment
+    def __init__(self, id, Autor, nota, LocalAtracao, dataHora, coment):
+        self.id = id
+        self.Autor = Autor
+        self.nota = nota
+        self.LocalAtracao = LocalAtracao
+        self.dataHora = dataHora
+        self.coment = coment
 
     # Métodos retorna
-    def retorna_id(self):
-        return self._id
+    def retornaid(self):
+        return self.id
 
-    def retorna_idAutor(self):
-        return self._loginAutor
+    def retornaidAutor(self):
+        return self.loginAutor
 
-    def retorna_nota(self):
-        return self._nota
+    def retornanota(self):
+        return self.nota
 
-    def retorna_idLocalAtracao(self):
-        return self._idLocalAtracao
+    def retornaidLocalAtracao(self):
+        return self.idLocalAtracao
 
-    def retorna_dataHora(self):
-        return self._dataHora
+    def retornadataHora(self):
+        return self.dataHora
 
-    def retorna_coment(self):
-        return self._coment
+    def retornacoment(self):
+        return self.coment
 
     # Métodos altera
-    def altera_id(self, value):
-        self._id = value
+    def alteraid(self, value):
+        self.id = value
 
-    def altera_loginAutor(self, value):
-        self._loginAutor = value
+    def alteraloginAutor(self, value):
+        self.loginAutor = value
 
-    def altera_nota(self, value):
-        self._nota = value
+    def alteranota(self, value):
+        self.nota = value
 
-    def altera_idLocalAtracao(self, value):
-        self._idLocalAtracao = value
+    def alteraidLocalAtracao(self, value):
+        self.idLocalAtracao = value
 
-    def altera_dataHora(self, value):
-        self._dataHora = value
+    def alteradataHora(self, value):
+        self.dataHora = value
 
-    def altera_coment(self, value):
-        self._coment = value
+    def alteracoment(self, value):
+        self.coment = value

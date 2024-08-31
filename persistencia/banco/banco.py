@@ -9,6 +9,7 @@ class Banco:
         self.cur = self.bd.cursor()
 
 
+    #Métodos para criar/excluir tabelas e outros gerais
     def cria_tabela_usuario(self): 
         try: 
             self.bd.execute("""
@@ -31,8 +32,8 @@ class Banco:
         try: 
             self.bd.execute("""
                 CREATE TABLE LOCAL_TURISTICO(
-                    id_local_turisico integer primary key autoincrement,   
-                    nome varchar(100) not null,
+                    id_local_turistico integer primary key autoincrement,   
+                    nome varchar(100) unique not null,
                     endereco varchar(200),
                     descricao varchar(500)
                 );
@@ -42,19 +43,6 @@ class Banco:
             return False
 
 
-
-    # def cria_tabela_localTuristico(self): 
-    #     try: 
-    #         self.bd.execute("""
-    #             CREATE TABLE LOCAL_TURISTICO(
-    #                 id_local_turistico integer autoincrement primary key
-    #             );
-    #         """)
-    #         return True
-    #     except: 
-    #         return False
-
-    #conferir com o almada
     def cria_tabela_Avaliacao(self): 
         try: 
             self.bd.execute("""
@@ -85,6 +73,12 @@ class Banco:
             return False    
 
 
+    #salva as alteracoes no arquivo .db 
+    def commit(self):
+        self.bd.commit()
+
+
+    #Métodos para a tabela Usuario
 
     #dados deve ser uma lista unitaria [(nome, login, senha, is_admin)]
     def insere_usuario(self, dados: list):
@@ -121,7 +115,7 @@ class Banco:
 
 
     #procura na tabela Usuario por nome e retorna uma lista com todos os atributos 
-    def procura_usuario_login(self, login:str): 
+    def recupera_usuario_login(self, login:str): 
         try:
             resposta = self.cur.execute(f"""
                 SELECT * 
@@ -210,6 +204,8 @@ class Banco:
             return 400
 
 
+    #Métodos para a tabela Local_Turistico
+
     #LT deve ser uma lista unitária de tupla [(nome, endereco, descricao)]
     #retorna True se der certo e Falso se der errado (qualquer que seja o motivo)
     def inserir_local_turistico(self, LT: list) -> bool:
@@ -228,7 +224,7 @@ class Banco:
         res = self.cur.execute(f"""
             SELECT * 
             FROM LOCAL_TURISTICO
-            WHERE id_turismo = {id}
+            WHERE id_local_turistico = {id}
         """)
         return list(res.fetchall())[0]
 
@@ -239,10 +235,10 @@ class Banco:
             res = self.cur.execute(f"""
                 SELECT * 
                 FROM LOCAL_TURISTICO 
-                WHERE nome = {nome}
+                WHERE nome = '{nome}';
             """)
             
-            return list(res.fetchall())
+            return list(res.fetchall())[0]
         
         except Exception as e:
             print(f'ERROR ao procuarar local: {e}')
@@ -276,9 +272,7 @@ class Banco:
             return False
 
 
-    #salva as alteracoes no arquivo .db 
-    def commit(self):
-        self.bd.commit()
+    #Métodos para a tabela Avaliação
 
     def insere_avaliacao(self, novaAvaliacao): 
         try:
@@ -384,7 +378,7 @@ class Banco:
     def retornaTodasAvals(self):
         try:
             resposta = self.cur.execute("""
-                SELECT u.nome AS nome_user, a.comentario, a.nota, a.data, lt.nome AS nome_local, a.id_avaliacao
+                SELECT a.id_avaliacao, a.nota, a.data, a.comentario, u.login, lt.nome
                 FROM USUARIO u
                 JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
                 JOIN LOCAL_TURISTICO lt ON a.id_local_turistico = lt.id_local_turistico
@@ -393,4 +387,22 @@ class Banco:
         
         except Exception as e:
             print(f'ERROR ao retornar todas avals: {e}')
+            return False
+
+    def exclui_todasAval_user(self, login):
+        try:
+            self.bd.execute(f"""
+                DELETE FROM AVALIACAO
+                WHERE id_usuario IN (
+                    SELECT a.id_usuario
+                    FROM AVALIACAO a
+                    JOIN USUARIO u ON a.id_usuario = u.id_usuario
+                    WHERE u.login = '{login}'
+                )
+                """)
+            self.bd.commit()
+            print(f'Todas as avaliacoes do {login} foram apagadas')
+            return True
+        except Exception as e:
+            print(f'ERROR ao apagar avaliacoes: {e}')
             return False

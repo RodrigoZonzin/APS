@@ -1,11 +1,11 @@
-from persistencia.PersistenciaLocalTurisico import *
+# from persistencia.PersistenciaLocalTurisico import *
 from model import LocalTuristico as lc
 
 from persistencia.banco import banco as b
 
 banco = b.Banco()
 
-persist = PersisnciaLocalTuristico()
+# persist = PersisnciaLocalTuristico()
 
 class LocalTuristicoController:
     def adicionarLocalTuristico(self, lt: list):
@@ -21,7 +21,8 @@ class LocalTuristicoController:
         return banco.exclui_local_turistico(id_local)
 
     def procuraLocalPorNome(self, nome_local):
-       res = banco.procura_local_turistico_por_nome(nome_local)
+        res = banco.procura_local_turistico_por_nome(nome_local)
+        return res
 
     def retornaTodosLocais(self):
         res = banco.retornaTodosLocais()

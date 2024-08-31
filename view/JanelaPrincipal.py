@@ -2,18 +2,18 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import pandas as pd
-from control import controle as ct
+# from control import controle as ct
 from . import JanelaLogin as jl
 from . import JanelaRegistrar as jr
 from . import JanelaBuscar as jb
 from . import JanelaUsuarioNormal as ju
 from . import JanelaUsuarioAdm as jua
 from . import JanelaAtracao as ja
-
-controladorLocalTuristico = ct.LocalTuristicoController()
-controladorUsuario = ct.UsuarioController()
-
 from control.controlLocalTuristico import LocalTuristicoController as lt
+
+# controladorLocalTuristico = ct.LocalTuristicoController()
+# controladorUsuario = ct.UsuarioController()
+
 controlLt = lt()
 
 class Janela:
