@@ -1,6 +1,9 @@
 from . import Turismo as t
 
 class LocalTuristico(t.Turismo):
+    def __init__(self, id, nome, endereco, descricao):
+        super().__init__(id, nome, endereco, descricao)
+
     def alteraNome(self, novoNome):
         self.nome = novoNome
 

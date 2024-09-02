@@ -7,19 +7,10 @@ class DAOUsuario(DAO):
         super().__init__()
         self.banco = b.Banco()
 
-    #(id_usuario, nome, login, senha, is_admin)
-    def create(self, novo_u):
+    
+    def create(self):
         try:
-            dados = [(novo_u.id,
-                      novo_u.nome,
-                      novo_u.login,
-                      novo_u.senha,
-                      novo_u.isAdmin)]
-
-            
-            self.banco.insere_usuario(dados)
-
-            return True
+            return True if self.banco.cria_tabela_usuario() else False
         except: 
             return False
 
@@ -38,14 +29,21 @@ class DAOUsuario(DAO):
         except:
             return False
 
-    def update():
-        pass
+    def update(self, user_alterar):
+        user_alterar
 
     def delete(self, id):
         try:
-            self.banco
-        except: 
-        
+            login_usuario = self.banco.recupera_usuario_id(id)[2]       #[2] corresponde ao login na tupla
+            self.banco.excluir_usuario(login= login_usuario)
 
-    def search():
-        pass
+            return True
+        except: 
+            return False
+
+    def search_id(self, usuario_id):
+        try:
+            return True if self.banco.recupera_usuario_id(usuario_id) else False
+        except: 
+            return False
+        
