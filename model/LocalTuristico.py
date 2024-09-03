@@ -4,6 +4,12 @@ class LocalTuristico(t.Turismo):
     def __init__(self, id, nome, endereco, descricao):
         super().__init__(id, nome, endereco, descricao)
 
+    def getNome(self):
+        return self.nome
+    
+    def getDescricao(self):
+        return self.descricao
+    
     def alteraNome(self, novoNome):
         self.nome = novoNome
 
