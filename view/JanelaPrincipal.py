@@ -19,11 +19,12 @@ controlLt = lt()
 class Janela:
     def __init__(self): 
         self.root = Tk()
+        self.root.bind("<Map>", self.atualizaLocais)
         self.isLogged = False
         self.user = StringVar()
         self.userClass = None
 
-        self.locais = controlLt.retornaTodosLocais()
+        self.locaisAtr = controlLt.retornaTodosLocaisEAtr()
 
         #CONFIGURAÇÃO DA PÁGINA PRINCIPAL
         self.root.title("Empresa de Turismo")
@@ -43,7 +44,7 @@ class Janela:
         self.botaoReg = Button(
             self.fr1, 
             text='Registrar', 
-            command=lambda: (self.root.withdraw(), jr.JanelaReg(self.root, self.callbackLogin)),
+            command=self.chamarTelaRegistro,
             bg='#546353',
             font=('Verdana', '12')
         )
@@ -122,7 +123,7 @@ class Janela:
         self.botaoAtracoes = []
         self.txtAtracoes = []
 
-        for i, row in enumerate(self.locais): 
+        for i, row in enumerate(self.locaisAtr): 
             self.Atracaoes.append(Frame(self.frameListagemAtracoes, pady=10))
             self.Atracaoes[i]['background'] = "gray"
             self.Atracaoes[i]['height'] = 100
@@ -139,7 +140,7 @@ class Janela:
             self.campoAtracoes[i].grid(column=1, row=0)
 
             #botao 'conheca tal lugar' para redirecionar a pagina
-            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row[1]}', command = lambda atrc=row :self.chamarTelaAtracoes(atrc)))
+            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row[2]}', command = lambda atrc=row :self.chamarTelaAtracoes(atrc)))
             self.botaoAtracoes[i].pack(side='top')
 
             #breve descrição da atracao turistica
@@ -153,7 +154,13 @@ class Janela:
 
     def chamarTelaLogin(self):
         self.root.withdraw()
+        self.root.bind("<Map>", self.atualizaLocais)
         self.janelaLog = jl.JanelaLogin(self.root, self.callbackLogin)
+
+    def chamarTelaRegistro(self):
+        self.root.withdraw() 
+        self.root.bind("<Map>", self.atualizaLocais)
+        jr.JanelaReg(self.root, self.callbackLogin)
 
     def callbackLogin(self, user):
         self.userClass = user#n sei vamos ver
@@ -166,20 +173,6 @@ class Janela:
         self.botaoLogin.config(text='Logout', command=self.logOut)
         self.botaoReg.config(text='Usuário', command=self.chamarTelaUser)
 
-    def callbackAtracoes(self, atracao):
-        #Não sei o que o callback faz. Por ora, esse método não fará nada e 
-        #servirá apenas para nao dar erro de atributo nao existente ass: Rodrigo 
-        pass
-        """self.userClass = user#n sei vamos ver
-
-        self.user.set(user.nome)#n sei vamos ver
-        self.isLogged = True
-        self.isAdmin = user.isAdmin
-
-        self.lNome.config(text=str(user.nome))
-        self.botaoLogin.config(text='Logout', command=self.logOut)
-        self.botaoReg.config(text='Usuário', command=self.chamarTelaUser)
-        """
     def logOut(self):
         alert = Toplevel(self.root, bg="#6cbd74")
         alert.title('Alerta Logout')
@@ -199,6 +192,7 @@ class Janela:
 
     def chamarTelaUser(self):
         self.root.withdraw()
+        self.root.bind("<Map>", self.atualizaLocais)
         if self.isAdmin:
             jua.JanelaUsuarioAdm(self.root, self.userClass)
         else:
@@ -207,4 +201,57 @@ class Janela:
 
     def chamarTelaAtracoes(self, atrc): 
         self.root.withdraw()
-        self.janelaLog = ja.JanelaAtracao(self.root, self.callbackAtracoes, self.userClass, atrc)
+        self.root.bind("<Map>", self.atualizaLocais)
+        self.janelaLog = ja.JanelaAtracao(self.root, self.userClass, atrc)
+
+    def destruirTabela(self):
+        for i in range(len(self.Atracaoes)):
+            self.Atracaoes[i].destroy()
+            # self.ReferenciaImgAtracoes[i].destroy() 
+            self.imgAtracoes[i].destroy()
+            self.campoAtracoes[i].destroy()
+            self.botaoAtracoes[i].destroy()
+            self.txtAtracoes[i].destroy()
+
+        self.Atracaoes = []
+        self.ReferenciaImgAtracoes = [] 
+        self.imgAtracoes = []
+        self.campoAtracoes = []
+        self.botaoAtracoes = []
+        self.txtAtracoes = []
+            
+
+    def atualizaLocais(self, event): #Essa função vai atualizar o atributo q armazena locais e atracoes. Isso ocorre quando a janela voltar a aparecer.
+        #atualizar o atributo de locais e atracoes
+        self.locaisAtr = controlLt.retornaTodosLocaisEAtr()
+
+        #destruir a tabela atual
+        self.destruirTabela()
+
+        #recriar a tabela de novo
+        for i, row in enumerate(self.locaisAtr): 
+            self.Atracaoes.append(Frame(self.frameListagemAtracoes, pady=10))
+            self.Atracaoes[i]['background'] = "gray"
+            self.Atracaoes[i]['height'] = 100
+            self.Atracaoes[i].pack(side='top', fill='y')
+
+            #imagem da atração
+            self.ReferenciaImgAtracoes.append(ImageTk.PhotoImage(Image.open("./view/imgs/img_id1.jpg").resize((200, 100))))
+            self.imgAtracoes.append(Label(self.Atracaoes[i], image=self.ReferenciaImgAtracoes[i], width=200, height=100))
+            self.imgAtracoes[i].image = self.ReferenciaImgAtracoes[i]
+            self.imgAtracoes[i].grid(column=0, row=0)
+
+            #container para adicionar o botao e o texto, ao lado da imagem
+            self.campoAtracoes.append(Frame(self.Atracaoes[i]))
+            self.campoAtracoes[i].grid(column=1, row=0)
+
+            #botao 'conheca tal lugar' para redirecionar a pagina
+            self.botaoAtracoes.append(Button(self.campoAtracoes[i], bg='white', text=f'Conheça {row[2]}', command = lambda atrc=row :self.chamarTelaAtracoes(atrc)))
+            self.botaoAtracoes[i].pack(side='top')
+
+            #breve descrição da atracao turistica
+            self.txtAtracoes.append(Label(self.campoAtracoes[i], wraplength=200, width=50, text=f"{row[3]}", bg="yellow"))
+            self.txtAtracoes[i].pack()  
+
+        #desativo o bind para evitar que o evento seja acionado toda hora
+        self.root.unbind("<Map>")

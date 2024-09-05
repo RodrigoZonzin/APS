@@ -10,12 +10,11 @@ controlLt = LocalTuristicoController()
 controlA = AvaliacaoController()
 
 class JanelaAtracao(): 
-    def __init__(self, princ, callback, user, atrc):
+    def __init__(self, princ, user, atrc):
         self.princ = princ
-        self.callback = callback
         self.user = user
         self.atrc = atrc
-        print(f'atrc: {atrc}')
+        # print(f'atrc: {atrc}')
         self.coments = controlLt.retornarAvalsLocal(atrc[0])
 
         #CONFIGURACAO DA PÁGINA DE ATRACAO
@@ -46,6 +45,35 @@ class JanelaAtracao():
             font=('Verdana', '12')
         )
         bReg.pack(side='left')
+
+        frameNome = Frame(
+            self.root,
+            bg='#6cbd74'
+        )
+        frameNome.pack()
+
+        LNome = Label(
+            frameNome,
+            bg='#6cbd74',
+            text=self.atrc[2],
+            font=('Verdana', '15')
+        )
+        LNome.pack()
+
+        tipo = -1
+        if self.atrc[1] == 0:
+            tipo = 'Local Turístico'
+        else:
+            tipo = 'Atração Turística'
+        
+
+        LTipo = Label(
+            frameNome,
+            bg='#6cbd74',
+            text=f'Tipo: {tipo}',
+            font=('Verdana', '15')
+        )
+        LTipo.pack()
 
         #FRAME PARA A IMAGEM 
         frameImg = Frame(
@@ -176,11 +204,24 @@ class JanelaAtracao():
 
 
     def enviarAvaliacao(self):
-        nota = int(self.variable.get())
+        if self.variable.get() != '-':
+            nota = int(self.variable.get())
+        else:
+            alert = Toplevel(self.root, bg="#6cbd74")
+            alert.title('Alerta')
+            alert.geometry('315x120')
+
+            fAlert = Frame(alert, bg="#6cbd74")
+            fAlert.pack(pady=40)
+            
+            lAlert = Label(fAlert, text='Por favor coloque uma nota para sua avaliação', bg="#6cbd74")
+            lAlert.pack()
+            return
+
         res = controlA.adicionar_avaliacao((int(self.user.id), nota, self.atrc[0], '2024-08-02', self.entry.get("1.0", END).strip()))
         if res:
-            res = control.fazerAvaliacao(self.user, (int(self.user.id), nota, self.atrc[0], '2024-08-02', self.entry.get("1.0", END).strip()))
-            if res:
+            # res = control.fazerAvaliacao(self.user, [(int(self.user.id), nota, self.atrc[0], '2024-08-02', self.entry.get("1.0", END).strip())])
+            # if res:
                 alert = Toplevel(self.root, bg="#6cbd74")
                 alert.title('Alerta')
                 alert.geometry('315x120')
@@ -191,7 +232,7 @@ class JanelaAtracao():
                 lAlert = Label(fAlert, text='Avaliação feita com sucesso!', bg="#6cbd74")
                 lAlert.pack()
 
-            else:
+        else:
                 alert = Toplevel(self.root, bg="#6cbd74")
                 alert.title('Alerta')
                 alert.geometry('315x120')

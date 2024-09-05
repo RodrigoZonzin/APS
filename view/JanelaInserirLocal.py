@@ -1,26 +1,20 @@
 from tkinter import *
 from control.controlLocalTuristico import *
+from control.controlAtracao import *
 
 controleLC = LocalTuristicoController()
+controleAt = AtracaoTuristicaController()
 
 class JanelaInserirLocal():
-    def __init__(self, princ):
+    def __init__(self, princ, ltAtr):
+        self.ltAtr = ltAtr
         self.root = Toplevel()
         self.root.title('Inserir Local Turístico')
-        self.root.geometry('315x250')
+        self.root.geometry('450x250')
         self.root.configure(bg="#6cbd74")
 
         self.frame1 = Frame(self.root, bg="#6cbd74")
         self.frame1.pack()
-
-        l1 = Label(
-            self.frame1, 
-            text='ID',
-            bg="#6cbd74"    
-        )
-        l1.pack()
-        self.idLc = Entry(self.frame1)
-        self.idLc.pack()
         
         l2 = Label(
             self.frame1, 
@@ -67,13 +61,16 @@ class JanelaInserirLocal():
 
 
     def enviarLocalT(self):
-        if self.idLc.get() == '' or self.nomeLc.get() == '' or self.endLc.get() == '' or self.descLc.get() == '':
+        if self.nomeLc.get() == '' or self.endLc.get() == '' or self.descLc.get() == '':
             #Não inseriu nada
             self.lresp.config(text='Por favor insira todas as infromações')
         else:
-            response = controleLC.adicionarLocalTuristico(self.idLc.get(), self.nomeLc.get(), self.endLc.get(), self.descLc.get())
+            if self.ltAtr == 0:
+                response = controleLC.adicionarLocalTuristico([self.nomeLc.get(), self.endLc.get(), self.descLc.get()])
+            else:
+                response = controleAt.adicionarAtracaoTuristico([self.nomeLc.get(), self.endLc.get(), self.descLc.get()])
 
-            if response != None:
+            if response:
                 self.lresp.config(text='Local Turistico Adicionado com sucesso!')
 
             else:

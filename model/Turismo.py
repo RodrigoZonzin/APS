@@ -7,10 +7,10 @@ class Turismo(ABC):
         self.endereco = endereco
         self.descricao = descricao
 
-    @abstractmethod
+    #@abstractmethod
     def alterarInfos(self):
         return
     
-    @abstractmethod
+    #@abstractmethod
     def apagar(self):
         return

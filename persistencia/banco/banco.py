@@ -28,18 +28,19 @@ class Banco:
 
 
 
-    def cria_tabela_local_turistico(self): 
+    def cria_tabela_localT_atrc(self): 
         try: 
             self.bd.execute("""
-                CREATE TABLE LOCAL_TURISTICO(
-                    id_local_turistico integer primary key autoincrement,   
+                CREATE TABLE LOCALT_ATRAC(
+                    id integer primary key autoincrement,   
+                    isLT_Atr integer not null,
                     nome varchar(100) unique not null,
                     endereco varchar(200),
                     descricao varchar(500)
                 );
             """)
             return True
-        except: 
+        except:
             return False
 
 
@@ -50,11 +51,11 @@ class Banco:
                     id_avaliacao INTEGER PRIMARY KEY AUTOINCREMENT,
                     id_usuario INTEGER,
                     nota INTEGER, 
-                    id_local_turistico INTEGER,
+                    id_localAtr INTEGER,
                     data DATE, 
                     comentario VARCHAR(300),
                     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
-                    FOREIGN KEY (id_local_turistico) REFERENCES Local_Turistico(id_local_turistico)
+                    FOREIGN KEY (id_localAtr) REFERENCES LOCALT_ATRAC(id)
                 )                
             """)
             return True
@@ -207,10 +208,10 @@ class Banco:
     #Métodos para a tabela Local_Turistico
 
     #LT deve ser uma lista unitária de tupla [(nome, endereco, descricao)]
-    #retorna True se der certo e Falso se der errado (qualquer que seja o motivo)
-    def inserir_local_turistico(self, LT: list) -> bool:
+    #retorna True se der certo e Falso se der errado (qualquer que seja o motivo)]
+    def inserir_localT_Atr(self, LT, isLT_Atr) -> bool:
         try: 
-            self.bd.execute("INSERT INTO LOCAL_TURISTICO(nome, endereco, descricao) VALUES (?, ?, ?)", LT) 
+            self.bd.execute(f"INSERT INTO LOCALT_ATRAC(isLT_Atr, nome, endereco, descricao) VALUES ({isLT_Atr}, '{LT[0]}', '{LT[1]}', '{LT[2]}');") 
             self.commit()
             return True
         
@@ -220,21 +221,21 @@ class Banco:
 
     #retorna uma tupla com as informacoes do local turistico 
     #(nome, endereco, descricao)
-    def procura_local_turistico_por_id(self, id: int) -> tuple: 
+    def procura_localT_Atr_id(self, id: int) -> tuple: 
         res = self.cur.execute(f"""
             SELECT * 
-            FROM LOCAL_TURISTICO
-            WHERE id_local_turistico = {id}
+            FROM LOCALT_ATRAC
+            WHERE id = {id};
         """)
         return list(res.fetchall())[0]
 
     #retorna uma tupla com as informacoes do local turistico 
     #(nome, endereco, descricao)
-    def procura_local_turistico_por_nome(self, nome: str) -> tuple: 
+    def procura_localT_Atr_nome(self, nome: str) -> tuple: 
         try:
             res = self.cur.execute(f"""
                 SELECT * 
-                FROM LOCAL_TURISTICO 
+                FROM LOCALT_ATRAC 
                 WHERE nome = '{nome}';
             """)
             
@@ -245,11 +246,11 @@ class Banco:
             return False
 
 
-    def exclui_local_turistico(self, id: int) -> bool: 
+    def exclui_localT_Atr(self, id: int) -> bool: 
         try: 
             self.bd.execute(f"""
-                DELETE FROM LOCAL_TURISTICO
-                WHERE id_local_turistico = {id} 
+                DELETE FROM LOCALT_ATRAC
+                WHERE id = {id} 
             """)
             self.commit()
             return True
@@ -258,11 +259,26 @@ class Banco:
             return False 
 
 
-    def retornaTodosLocais(self):
+    def retornaTodosLocaisOuAtr(self, isLT_Atr):
         try: 
             res = self.bd.execute(f"""
                 SELECT *
-                FROM LOCAL_TURISTICO 
+                FROM LOCALT_ATRAC
+                WHERE isLT_Atr = {isLT_Atr};
+            """)
+
+            return list(res.fetchall())
+        
+        except Exception as e:
+            print(f'ERROR: {e}') 
+            return False
+        
+    
+    def retornaTodosLocaisEAtr(self):
+        try: 
+            res = self.bd.execute(f"""
+                SELECT *
+                FROM LOCALT_ATRAC;
             """)
 
             return list(res.fetchall())
@@ -277,7 +293,7 @@ class Banco:
     def insere_avaliacao(self, novaAvaliacao): 
         try:
             self.bd.execute(
-                f"""INSERT INTO AVALIACAO(id_usuario, nota, id_local_turistico, data, comentario)
+                f"""INSERT INTO AVALIACAO(id_usuario, nota, id_localAtr, data, comentario)
                     VALUES ({novaAvaliacao[0]}, {novaAvaliacao[1]}, {novaAvaliacao[2]}, {novaAvaliacao[3]}, '{novaAvaliacao[4]}')""" 
                 )
             print(novaAvaliacao)
@@ -351,7 +367,7 @@ class Banco:
                 SELECT u.nome AS nome_user, a.comentario, a.nota, a.data, lt.nome AS nome_local, a.id_avaliacao
                 FROM USUARIO u
                 JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
-                JOIN LOCAL_TURISTICO lt ON a.id_local_turistico = lt.id_local_turistico
+                JOIN LOCALT_ATRAC lt ON a.id_localAtr = lt.id
                 WHERE u.login = '{login}';
             """)
             return list(resposta.fetchall())
@@ -367,8 +383,8 @@ class Banco:
                 SELECT u.nome AS nome_user, a.comentario, a.nota, a.data, lt.nome AS nome_local, a.id_avaliacao
                 FROM USUARIO u
                 JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
-                JOIN LOCAL_TURISTICO lt ON a.id_local_turistico = lt.id_local_turistico
-                WHERE lt.id_local_turistico = '{ltId}';
+                JOIN LOCALT_ATRAC lt ON a.id_localAtr = lt.id
+                WHERE lt.id = '{ltId}';
             """)
             return list(resposta.fetchall())
         except Exception as e:
@@ -381,7 +397,7 @@ class Banco:
                 SELECT a.id_avaliacao, a.nota, a.data, a.comentario, u.login, lt.nome
                 FROM USUARIO u
                 JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
-                JOIN LOCAL_TURISTICO lt ON a.id_local_turistico = lt.id_local_turistico
+                JOIN LOCALT_ATRAC lt ON a.id_localAtr = lt.id
             """)
             return list(resposta.fetchall())
         
@@ -397,7 +413,7 @@ class Banco:
                     SELECT a.id_usuario
                     FROM AVALIACAO a
                     JOIN USUARIO u ON a.id_usuario = u.id_usuario
-                    WHERE u.login = '{login}'
+                    WHERE u.login = '{login}';
                 )
                 """)
             self.bd.commit()
@@ -406,3 +422,26 @@ class Banco:
         except Exception as e:
             print(f'ERROR ao apagar avaliacoes: {e}')
             return False
+        
+    def exclui_todasAval_localAtr(self, id_atr):
+        try:
+            self.bd.execute(f"""
+                DELETE FROM AVALIACAO
+                WHERE id_localAtr = {id_atr}
+                """)
+            self.bd.commit()
+            print(f'Todas as avaliacoes do {id_atr} foram apagadas')
+            return True
+        except Exception as e:
+            print(f'ERROR ao apagar avaliacoes: {e}')
+            return False
+        
+
+        # DELETE FROM AVALIACAO
+        #         WHERE id_localAtr IN (
+        #             SELECT a.id_localAtr
+        #             FROM AVALIACAO a
+        #             JOIN LOCALt_ATRAC lta ON a.id_usuario = lta.id_usuario
+        #             WHERE lta.nome = '{nome}';
+        #         )
+        #         """

@@ -8,8 +8,8 @@ banco = b.Banco()
 # persist = PersisnciaLocalTuristico()
 
 class LocalTuristicoController:
-    def adicionarLocalTuristico(self, lt: list):
-        response = banco.inserir_local_turistico(lt)
+    def adicionarLocalTuristico(self, lt):
+        response = banco.inserir_localT_Atr(lt, 0)
         
         if response == True:
             #verificar se precisa retorar msm o local
@@ -18,16 +18,21 @@ class LocalTuristicoController:
             return False
 
     def deletarLocalTuristico(self, id_local):
-        return banco.exclui_local_turistico(id_local)
+        return banco.exclui_localT_Atr(id_local)
 
     def procuraLocalPorNome(self, nome_local):
-        res = banco.procura_local_turistico_por_nome(nome_local)
+        res = banco.procura_localT_Atr_nome(nome_local)
         return res
 
     def retornaTodosLocais(self):
-        res = banco.retornaTodosLocais()
+        res = banco.retornaTodosLocaisOuAtr(0)
         return res
     
+    def retornaTodosLocaisEAtr(self):
+        res = banco.retornaTodosLocaisEAtr()
+        return res
+
+    #tem q ir pro control de Avaliacao
     def retornarAvalsLocal(self, ltId):
         res = banco.recupera_todas_avaliacoes_local(ltId)
         if res == False: return []

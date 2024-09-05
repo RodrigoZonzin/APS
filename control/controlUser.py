@@ -59,6 +59,10 @@ class UsuarioController:
         
     #     return user
 
+    def fazerAvaliacao(self, user, aval): #n sei se vai precisar
+        res = banco.insere_avaliacao(aval)
+        return res
+
     def apagarAvaliacao(self, user, aval):
         #apaga aval do model do usuario
         user.apagarAval(aval)
@@ -109,8 +113,8 @@ class UsuarioController:
 
     def apagar_usuario(self, login):
        #apaga todas as avaliacoes deste usuario antes de apagar o usuario
-        if not banco.exclui_todasAval_user(login):
-            return False
+        # if not banco.exclui_todasAval_user(login):
+        #     return False
 
         res = banco.excluir_usuario(login)
         return res

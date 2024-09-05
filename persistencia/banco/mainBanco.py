@@ -4,7 +4,7 @@ from . import banco as b
 def iniciaBd():
     banco = b.Banco()
     banco.cria_tabela_usuario()
-    banco.cria_tabela_local_turistico()
+    banco.cria_tabela_localT_atrc()
     banco.cria_tabela_Avaliacao()
     
 
@@ -14,8 +14,8 @@ def iniciaBd():
     # banco.insere_usuario([("a", "a", "a", 1)])
     # banco.insere_usuario([("b", "b", "b", 0)])
     #
-    # banco.inserir_local_turistico(["DCOMP", "Av. do Bengo, 4125, SJDR", "Campus Tancredo Never"])
-    # banco.inserir_local_turistico(["Maria Fumaça", "Av. Centro, 123, SJDR", "Venha ver a Maria Fumaça"])
+    # banco.inserir_localT_Atr(["DCOMP", "Av. do Bengo, 4125, SJDR", "Campus Tancredo Never"], 1)
+    # banco.inserir_localT_Atr(["Maria Fumaça", "Av. Centro, 123, SJDR", "Venha ver a Maria Fumaça"], 1)
     #banco.inserir_local_turistico(["Igreja do Carmo", "Av. Centro, 456, SJDR", "Actiones praejudiciales in Dei"])
     #
     #print(banco.procura_usuario_login("rodrigozonzin.com"))
