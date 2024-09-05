@@ -1,7 +1,6 @@
 from DAO import DAO
-import banco.banco as b
-import model.Usuario as u
-import model.Avaliacao as a
+from model.Usuario import Usuario
+from model.Avaliacao import Avaliacao
 from datetime import datetime
 import sqlite3
 
@@ -28,7 +27,7 @@ class DAOUsuario(DAO):
             return False
 
     #dados deve ser um usuario
-    def insere_usuario(self, user: u.Usuario) -> bool:
+    def insere_usuario(self, user: Usuario) -> bool:
         #Colocar hash nas senhas
         dados = (
             user.nome,
@@ -66,7 +65,7 @@ class DAOUsuario(DAO):
             return 400
         
     #retorna um objeto usuario
-    def recupera_usuario_id(self, id:str) -> u.Usuario: 
+    def recupera_usuario_id(self, id:str) -> Usuario: 
         try:
             resposta = self.cur.execute(f"""
                 SELECT * 
@@ -75,7 +74,7 @@ class DAOUsuario(DAO):
             """)
             resposta = resposta.fetchall(); 
             
-            return u.Usuario(u.Usuario(id=          resposta[0], 
+            return Usuario(Usuario(id=          resposta[0], 
                                             nome=        resposta[1], 
                                             login=       resposta[2], 
                                             senha=       resposta[3], 
@@ -86,7 +85,7 @@ class DAOUsuario(DAO):
 
 
     #procura na tabela Usuario por nome e retorna uma lista com todos os atributos 
-    def recupera_usuario_login(self, login:str) -> u.Usuario: 
+    def recupera_usuario_login(self, login:str) -> Usuario: 
         try:
             resposta = self.cur.execute(f"""
                 SELECT * 
@@ -96,7 +95,7 @@ class DAOUsuario(DAO):
             
             avaliacoes = None
 
-            usuario_consultado = u.Usuario(id=          resposta[0], 
+            usuario_consultado = Usuario(id=          resposta[0], 
                                            nome=        resposta[1], 
                                            login=       resposta[2], 
                                            senha=       resposta[3], 
@@ -146,7 +145,7 @@ class DAOUsuario(DAO):
             avaliacoes = None
 
             for usuario in list(resposta):
-                objetos_usuarios.append(u.Usuario(id=          resposta[0], 
+                objetos_usuarios.append(Usuario(id=          resposta[0], 
                                            nome=        resposta[1], 
                                            login=       resposta[2], 
                                            senha=       resposta[3], 

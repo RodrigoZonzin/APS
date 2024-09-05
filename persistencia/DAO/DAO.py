@@ -1,24 +1,22 @@
 import sqlite3
 
 class DAO():    
+    __instance = None
+    def __new__(cls):
+        if DAO.__instance is None:
+            DAO.__instance = super().__new__(cls)
+        return DAO.__instance
+    
     def __init__(self):
         self.DATABASE_PATH = 'database.db'; 
         self.bd  = sqlite3.connect(self.DATABASE_PATH)
         self.cur = self.bd.cursor()
 
-    #funcao para apagar uma tabela do banco de dados
-    #retorna um True caso dê certo e False caso dê errado
     def drop_table(self, nome_tabela: str) -> bool:
-        try: 
-            self.bd.execute(f'DROP TABLE {nome_tabela}')
-            return True
+        pass
         
-        except Exception: 
-            return False    
-
-    #salva as alteracoes no arquivo .db 
     def commit(self):
-        self.bd.commit()     
+        pass
 
     def create():
         pass
