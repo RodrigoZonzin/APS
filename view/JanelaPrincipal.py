@@ -85,8 +85,8 @@ class Janela:
 
         Button(
             self.fr2, 
-            text='Buscar', 
-            command=lambda: (jb.JanelaDeletarLocal(self.barraPesquisa.get()))
+            text='Buscar',
+            command=lambda: (jb.JanelaBuscarLocal(self.barraPesquisa.get()))
         ).pack(side='right', padx=5)
 
         #BOTÕES DE ALTERAR A TABELA DE LOCAIS/ATRAÇÕES

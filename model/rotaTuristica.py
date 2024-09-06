@@ -3,8 +3,7 @@ class RotaTuristica:
         self._id = id
         self._nome = nome
         self._descricao = descricao
-        self._locais_turisticos = []
-        self._atracoes_turisticas = []
+        self._locais_turisticosAtracoes = []
 
     # Getters e Setters para os atributos da rota
     def get_nome(self):

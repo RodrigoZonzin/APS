@@ -28,7 +28,10 @@ class UsuarioController:
         user = u.Usuario(None, nome, login, senha, 0)
         dao.insere_usuario(user)
 
+        dados = (nome, login, senha, 0)   
+        banco.insere_usuario([dados])
 
+        #return user
     def fazer_login(self, login, senha):
         #user = persist.fazerLogin(login, senha)
         user = dao.fazer_login(login, senha)

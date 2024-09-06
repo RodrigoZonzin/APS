@@ -1,5 +1,5 @@
 import DAOUsuario as daou
-import model.Usuario as u
+from model.Usuario import Usuario as u
 
 
 uRod = u.Usuario(0, 'Rodrigo', 'zonzin@rodrigo', 'odeiosoftware', 0, None)

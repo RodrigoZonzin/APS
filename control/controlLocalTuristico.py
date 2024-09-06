@@ -21,6 +21,8 @@ class LocalTuristicoController:
         return banco.exclui_localT_Atr(id_local)
 
     def procuraLocalPorNome(self, nome_local):
+        print(nome_local)
+        
         res = banco.procura_localT_Atr_nome(nome_local)
         return res
 
