@@ -1,9 +1,16 @@
-from DAO import DAO
+from . import DAO as d
 import model.Avaliacao as a
 import sqlite3
 
 
-class DAOAvaliacao(DAO):
+class DAOAvaliacao(d.DAO):
+    __instance = None
+    def __new__(cls):
+        if DAOAvaliacao.__instance is None:
+            DAOAvaliacao.__instance = super().__new__(cls)
+            DAOAvaliacao.__instance._initialized = True 
+        return DAOAvaliacao.__instance
+    
     def __init__(self):
         super().__init__()
 
@@ -15,12 +22,12 @@ class DAOAvaliacao(DAO):
                     id_avaliacao INTEGER PRIMARY KEY AUTOINCREMENT,
                     id_usuario INTEGER,
                     nota INTEGER, 
-                    id_local_turistico INTEGER,
+                    id_localAtr INTEGER,
                     data DATE, 
                     comentario VARCHAR(300),
-                    FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario),
-                    FOREIGN KEY (id_local_turistico) REFERENCES LOCAL_TURISTICO(id_local_turistico)
-                );
+                    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+                    FOREIGN KEY (id_localAtr) REFERENCES LOCALT_ATRAC(id)
+                )                
             """)
             return True 
         except Exception as e: 
@@ -30,17 +37,17 @@ class DAOAvaliacao(DAO):
     # Método para inserir uma nova avaliação
     def insere_avaliacao(self, novaAvaliacao: a.Avaliacao) -> bool: 
         dados = (
-            novaAvaliacao.id_usuario,
+            novaAvaliacao.Autor,
             novaAvaliacao.nota,
-            novaAvaliacao.id_local_turistico,
-            novaAvaliacao.data,
-            novaAvaliacao.comentario
+            novaAvaliacao.LocalAtracao,
+            novaAvaliacao.dataHora,
+            novaAvaliacao.coment
         )
         try:
             self.bd.execute(
-                """INSERT INTO AVALIACAO(id_usuario, nota, id_local_turistico, data, comentario)
-                    VALUES (?, ?, ?, ?, ?')""",
-                novaAvaliacao)
+                """INSERT INTO AVALIACAO(id_usuario, nota, id_localAtr, data, comentario)
+                    VALUES (?, ?, ?, ?, ?)""",
+                dados)
             
             self.commit()
             return True
@@ -115,7 +122,7 @@ class DAOAvaliacao(DAO):
             res = self.cur.execute(f"""
                 SELECT * 
                 FROM AVALIACAO
-                WHERE id_local_turistico = {id_local_turistico}
+                WHERE id_localAtr = {id_local_turistico}
             """)
 
             resultado = res.fetchall()
@@ -162,15 +169,65 @@ class DAOAvaliacao(DAO):
             return []
 
     # Método para excluir todas as avaliações de um usuário específico
-    def exclui_todas_avaliacoes_usuario(self, id_usuario: int) -> bool:
+    def exclui_todas_avaliacoes_usuario(self, login) -> bool:
         try:
             self.bd.execute(f"""
                 DELETE FROM AVALIACAO
-                WHERE id_usuario = {id_usuario}
-            """)
+                WHERE id_usuario IN (
+                    SELECT a.id_usuario
+                    FROM AVALIACAO a
+                    JOIN USUARIO u ON a.id_usuario = u.id_usuario
+                    WHERE u.login = '{login}'
+                )
+                """)
             self.commit()
+            print(f'Todas as avaliacoes do {login} foram apagadas')
             return True
         
         except Exception as e:
             print(f'ERROR ao excluir avaliacoes do usuario: {e}')
+            return False
+
+    def recupera_todas_avaliacoes_usuario(self, login):
+        try:
+            resposta = self.cur.execute(f"""
+                SELECT u.nome AS nome_user, a.comentario, a.nota, a.data, lt.nome AS nome_local, a.id_avaliacao
+                FROM USUARIO u
+                JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
+                JOIN LOCALT_ATRAC lt ON a.id_localAtr = lt.id
+                WHERE u.login = '{login}';
+            """)
+            return list(resposta.fetchall())
+        except Exception as e:
+            print(f'ERROR ao retornar avals local: {e}')
+            return False
+
+    #retorna todas as avaliacoes de um determinado local turistico
+    #[(Gabriel, "Muito Bom!", 5), (Joao Pedro, "Bom", 4), ...]
+    def recupera_todas_avaliacoes_local(self, ltId):
+        try:
+            resposta = self.cur.execute(f"""
+                SELECT u.nome AS nome_user, a.comentario, a.nota, a.data, lt.nome AS nome_local, a.id_avaliacao
+                FROM USUARIO u
+                JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
+                JOIN LOCALT_ATRAC lt ON a.id_localAtr = lt.id
+                WHERE lt.id = '{ltId}';
+            """)
+            return list(resposta.fetchall())
+        except Exception as e:
+            print(f'ERROR ao retornar avals local: {e}')
+            return False
+        
+    def retornaTodasAvals(self):
+        try:
+            resposta = self.cur.execute("""
+                SELECT a.id_avaliacao, a.nota, a.data, a.comentario, u.login, lt.nome
+                FROM USUARIO u
+                JOIN AVALIACAO a ON u.id_usuario = a.id_usuario
+                JOIN LOCALT_ATRAC lt ON a.id_localAtr = lt.id
+            """)
+            return list(resposta.fetchall())
+        
+        except Exception as e:
+            print(f'ERROR ao retornar todas avals: {e}')
             return False

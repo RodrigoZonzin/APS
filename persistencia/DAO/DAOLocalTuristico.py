@@ -12,11 +12,12 @@ class DAOLocalTuristico:
     def cria_tabela_local_turistico(self): 
         try: 
             self.bd.execute("""
-                CREATE TABLE LOCAL_TURISTICO(
-                    id_local_turistico INTEGER PRIMARY KEY AUTOINCREMENT,   
-                    nome VARCHAR(100) UNIQUE NOT NULL,
-                    endereco VARCHAR(200),
-                    descricao VARCHAR(500)
+                CREATE TABLE LOCALT_ATRAC(
+                    id integer primary key autoincrement,   
+                    isLT_Atr integer not null,
+                    nome varchar(100) unique not null,
+                    endereco varchar(200),
+                    descricao varchar(500)
                 );
             """)
             return True
@@ -33,7 +34,7 @@ class DAOLocalTuristico:
                 local.descricao
             )
             self.bd.execute(
-                "INSERT INTO LOCAL_TURISTICO(nome, endereco, descricao) VALUES (?, ?, ?)",
+                "INSERT INTO LOCALT_ATRAC(isLT_Atr, nome, endereco, descricao) VALUES (0, ?, ?, ?)",
                 dados
             )
             self.commit()
@@ -50,41 +51,41 @@ class DAOLocalTuristico:
         try:
             res = self.cur.execute(f"""
                 SELECT * 
-                FROM LOCAL_TURISTICO
-                WHERE id_local_turistico = {id}
+                FROM LOCALT_ATRAC
+                WHERE id = {id}
             """)
             resposta = res.fetchone()
             if resposta:
                 return lt.LocalTuristico(id=resposta[0], nome=resposta[1], endereco=resposta[2], descricao=resposta[3])
             else:
-                return None
+                return False
         except Exception as e:
             print(f'ERROR ao procurar local por ID: {e}')
-            return None
+            return False
 
     # Retorna um objeto LocalTuristico a partir do nome
     def procura_local_turistico_por_nome(self, nome: str) -> lt.LocalTuristico:
         try:
             res = self.cur.execute(f"""
                 SELECT * 
-                FROM LOCAL_TURISTICO 
+                FROM LOCALT_ATRAC 
                 WHERE nome = '{nome}';
             """)
             resposta = res.fetchone()
             if resposta:
                 return lt.LocalTuristico(id=resposta[0], nome=resposta[1], endereco=resposta[2], descricao=resposta[3])
             else:
-                return None
+                return False
         except Exception as e:
             print(f'ERROR ao procurar local por nome: {e}')
-            return None
+            return False
 
     # Exclui um local turístico pelo ID
     def exclui_local_turistico(self, id: int) -> bool: 
         try:
             self.bd.execute(f"""
-                DELETE FROM LOCAL_TURISTICO
-                WHERE id_local_turistico = {id}
+                DELETE FROM LOCALT_ATRAC
+                WHERE id = {id}
             """)
             self.commit()
             return True
@@ -97,7 +98,7 @@ class DAOLocalTuristico:
         try:
             res = self.cur.execute("""
                 SELECT * 
-                FROM LOCAL_TURISTICO
+                FROM LOCALT_ATRAC
             """)
             resposta = res.fetchall()
             locais = []

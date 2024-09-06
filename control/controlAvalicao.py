@@ -5,26 +5,29 @@ from model.LocalTuristico import *
 from model.AtracaoTuristica import *
 from control.controlUser import UsuarioController
 from control.controlLocalTuristico import LocalTuristicoController
+from persistencia.DAO import DAOAvaliacao as dav
 
+dao = dav.DAOAvaliacao()
 banco = b.Banco()
 controlU = UsuarioController()
 controlLt = LocalTuristicoController()
 
 class AvaliacaoController:
     def adicionar_avaliacao(self, aval):
-        res = banco.insere_avaliacao(aval)
+        aval = Avaliacao(None, aval[0], aval[1], aval[2], aval[3], aval[4])
+        res = dao.insere_avaliacao(aval)
         return res
 
     def apagar_avaliacao(self, id):
-        res = banco.exclui_avaliacao_id(id)
+        res = dao.exclui_avaliacao_id(id)
         return res
     
     def apagar_todasAvals_user(self, login):
-        res = banco.exclui_todasAval_user(login)
+        res = dao.exclui_todas_avaliacoes_usuario(login)
         return res
 
     def apagar_todasAvals_localAtr(self, localAtr):
-        res = banco.exclui_todasAval_localAtr(localAtr)
+        res = dao.exclui_todasAval_localAtr(localAtr)
         return res
 
     def retornaTodasAvals(self):
@@ -39,8 +42,8 @@ class AvaliacaoController:
             user = None
             lt = None
 
-            aux = controlU.buscar_usuario(i[4])
-            user = controlU.criaUser(aux, 0)
+            user = controlU.buscar_usuario(i[4])
+            # user = controlU.criaUser(aux, 0)
             # if aux[4] == 0:
             #     user = UsuarioNormal(aux[0], aux[1], aux[2], aux[3], aux[4])
             # else:

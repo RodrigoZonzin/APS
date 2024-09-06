@@ -1,11 +1,18 @@
-from DAO import DAO
+from . import DAO as d
 from model.Usuario import Usuario
 from model.Avaliacao import Avaliacao
 from datetime import datetime
 import sqlite3
 
 
-class DAOUsuario(DAO):
+class DAOUsuario(d.DAO):
+    __instance = None
+    def __new__(cls):
+        if DAOUsuario.__instance is None:
+            DAOUsuario.__instance = super().__new__(cls)
+            DAOUsuario.__instance._initialized = True 
+        return DAOUsuario.__instance
+
     def __init__(self):
         super().__init__()
 
@@ -36,7 +43,7 @@ class DAOUsuario(DAO):
             user.isAdmin)
         
         try:
-            self.bd.executemany(
+            self.bd.execute(
                 "INSERT INTO USUARIO(id_usuario, nome, login, senha, is_admin) VALUES (NULL, ?, ?, ?, ?)",
                 dados);
             print(dados)
@@ -92,8 +99,8 @@ class DAOUsuario(DAO):
                 FROM USUARIO 
                 WHERE login = '{login}';
             """)
-            
-            avaliacoes = None
+            resposta = resposta.fetchall()[0]
+            avaliacoes = []
 
             usuario_consultado = Usuario(id=          resposta[0], 
                                            nome=        resposta[1], 
@@ -140,16 +147,16 @@ class DAOUsuario(DAO):
                 FROM USUARIO 
             """)
             resposta = resposta.fetchall(); 
-            
+
             objetos_usuarios = []
-            avaliacoes = None
+            avaliacoes = []
 
             for usuario in list(resposta):
-                objetos_usuarios.append(Usuario(id=          resposta[0], 
-                                           nome=        resposta[1], 
-                                           login=       resposta[2], 
-                                           senha=       resposta[3], 
-                                           isAdmin=     resposta[4], 
+                objetos_usuarios.append(Usuario(id=          usuario[0], 
+                                           nome=        usuario[1], 
+                                           login=       usuario[2], 
+                                           senha=       usuario[3], 
+                                           isAdmin=     usuario[4], 
                                            avals=       avaliacoes))
             
             return objetos_usuarios

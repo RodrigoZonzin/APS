@@ -285,14 +285,14 @@ class JanelaUsuarioAdm():
             self.nomes.append(Label(
                 self.listFr[i],
                 bg='gray',
-                text=f'{item[1]}'
+                text=f'{item.nome}'
             ))
             self.nomes[i].pack(side='left', padx=7)
 
             self.logins.append(Label(
                 self.listFr[i],
                 bg='gray',
-                text=f'{item[2]}'
+                text=f'{item.login}'
             ))
             self.logins[i].pack(side='left', padx=7)
 
@@ -306,7 +306,7 @@ class JanelaUsuarioAdm():
             self.btnsExcluir.append(Button(
                 self.listFr[i],
                 text='Excluir',
-                command=lambda i=i, login=item[2]:self.chamarApagaUser(i, login),
+                command=lambda i=i, login=item.login:self.chamarApagaUser(i, login),
                 width=7
             ))
             self.btnsExcluir[i].pack(side='right')
@@ -314,12 +314,12 @@ class JanelaUsuarioAdm():
             self.btnsAdm.append(Button(
                 self.listFr[i],
                 text='',
-                command=lambda login=item[2], i=item[4], index=i:self.chamarMudarAdm(i, login, index),
+                command=lambda login=item.login, i=item.isAdmin, index=i:self.chamarMudarAdm(i, login, index),
                 width=7
             ))
             self.btnsAdm[i].pack(side='right')
 
-            if item[4] == 0:
+            if item.isAdmin == 0:
                 self.adms[i].configure(
                     text='É adm? Não'
                 )
