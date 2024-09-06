@@ -30,7 +30,6 @@ class UsuarioController:
         banco.insere_usuario([dados])
 
         #return user
-
     def fazer_login(self, login, senha):
         #user = persist.fazerLogin(login, senha)
         user = banco.fazer_login(login, senha)
