@@ -2,14 +2,17 @@
 from model import LocalTuristico as lc
 
 from persistencia.banco import banco as b
+from persistencia.DAO import DAOLocalTuristico as d
 
 banco = b.Banco()
+dao = d.DAOLocalTuristico()
 
 # persist = PersisnciaLocalTuristico()
 
 class LocalTuristicoController:
     def adicionarLocalTuristico(self, lt):
-        response = banco.inserir_localT_Atr(lt, 0)
+        lt1 = lc.LocalTuristico(None, lt[0], lt[1], lt[2])
+        response = dao.inserir_local_turistico(lt1)
         
         if response == True:
             #verificar se precisa retorar msm o local
@@ -18,36 +21,24 @@ class LocalTuristicoController:
             return False
 
     def deletarLocalTuristico(self, id_local):
-        return banco.exclui_localT_Atr(id_local)
+        return dao.exclui_local_turistico(id_local)
 
     def procuraLocalPorNome(self, nome_local):
         print(nome_local)
         
-        res = banco.procura_localT_Atr_nome(nome_local)
+        res = dao.procura_local_turistico_por_nome(nome_local)
         return res
 
     def retornaTodosLocais(self):
-        res = banco.retornaTodosLocaisOuAtr(0)
+        res = dao.retornaTodosLocais()
         return res
     
     def retornaTodosLocaisEAtr(self):
         res = banco.retornaTodosLocaisEAtr()
         return res
 
-    #tem q ir pro control de Avaliacao
     def retornarAvalsLocal(self, ltId):
         res = banco.recupera_todas_avaliacoes_local(ltId)
         if res == False: return []
 
         return res
-
-
-    '''def buscarLocalTuristicoID(id_local):
-        local = showLocalTuristicoId(id_local)
-        local = lc.LocalTuristico(local['ID'], local['Nome'], local['Endereco'], local['Descricao'])
-       
-        return local
-    
-    
-    def alterarInfo(id_local, nome, endereco, descricao):
-        alterarLocalTuristico(id_local, nome, endereco, descricao)'''

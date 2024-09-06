@@ -1,9 +1,17 @@
+from . import DAO as d
 import sqlite3
 import model.LocalTuristico as lt
 
-class DAOLocalTuristico:
+class DAOLocalTuristico(d.DAO):
+    __instance = None
+    def __new__(cls):
+        if DAOLocalTuristico.__instance is None:
+            DAOLocalTuristico.__instance = super().__new__(cls)
+            DAOLocalTuristico.__instance._initialized = True 
+        return DAOLocalTuristico.__instance
+    
     def __init__(self):
-        super.__init__()
+        super().__init__()
 
     def commit(self):
         self.bd.commit()
@@ -29,12 +37,14 @@ class DAOLocalTuristico:
     def inserir_local_turistico(self, local: lt.LocalTuristico) -> bool:
         try:
             dados = (
+                0,
                 local.nome,
                 local.endereco,
                 local.descricao
             )
+            print('lt:', dados)
             self.bd.execute(
-                "INSERT INTO LOCALT_ATRAC(isLT_Atr, nome, endereco, descricao) VALUES (0, ?, ?, ?)",
+                "INSERT INTO LOCALT_ATRAC(isLT_Atr, nome, endereco, descricao) VALUES (?, ?, ?, ?)",
                 dados
             )
             self.commit()
@@ -56,7 +66,7 @@ class DAOLocalTuristico:
             """)
             resposta = res.fetchone()
             if resposta:
-                return lt.LocalTuristico(id=resposta[0], nome=resposta[1], endereco=resposta[2], descricao=resposta[3])
+                return lt.LocalTuristico(id=resposta[0], nome=resposta[2], endereco=resposta[3], descricao=resposta[4])
             else:
                 return False
         except Exception as e:
@@ -73,7 +83,7 @@ class DAOLocalTuristico:
             """)
             resposta = res.fetchone()
             if resposta:
-                return lt.LocalTuristico(id=resposta[0], nome=resposta[1], endereco=resposta[2], descricao=resposta[3])
+                return lt.LocalTuristico(id=resposta[0], nome=resposta[2], endereco=resposta[3], descricao=resposta[4])
             else:
                 return False
         except Exception as e:
@@ -99,11 +109,12 @@ class DAOLocalTuristico:
             res = self.cur.execute("""
                 SELECT * 
                 FROM LOCALT_ATRAC
+                WHERE isLT_Atr = 0;
             """)
             resposta = res.fetchall()
             locais = []
             for local in resposta:
-                locais.append(lt.LocalTuristico(id=local[0], nome=local[1], endereco=local[2], descricao=local[3]))
+                locais.append(lt.LocalTuristico(id=local[0], nome=local[2], endereco=local[3], descricao=local[4]))
             
             return locais
         except Exception as e:

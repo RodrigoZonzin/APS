@@ -1,11 +1,14 @@
 from model import AtracaoTuristica as at
 from persistencia.banco import banco as b
+from persistencia.DAO import DAOAtracao as d
 
 banco = b.Banco()
+dao = d.DAOAtracao()
 
 class AtracaoTuristicaController:
-    def adicionarAtracaoTuristico(self, at):
-        response = banco.inserir_localT_Atr(at, 1)
+    def adicionarAtracaoTuristico(self, atr):
+        atr = at.AtracaoTuristica(None, atr[0], atr[1], atr[2])
+        response = dao.insere_atracao(atr)
         
         if response == True:
             #verificar se precisa retorar msm o local
@@ -14,14 +17,14 @@ class AtracaoTuristicaController:
             return False
 
     def deletarAtracaoTuristico(self, id_atracao):
-        return banco.exclui_localT_Atr(id_atracao)
+        return dao.exclui_atracao_turistica(id_atracao)
 
     def procuraAtracaoPorNome(self, nome_local):
-        res = banco.procura_localT_Atr_nome(nome_local)
+        res = dao.procura_atracao_turistica_por_nome(nome_local)
         return res
 
     def retornaTodasAtracoes(self):
-        res = banco.retornaTodosLocaisOuAtr(1)
+        res = dao.seleciona_todas_atracoes()
         return res
     
     #tem q ir pro control de Avaliacao

@@ -423,7 +423,7 @@ class JanelaUsuarioAdm():
         btnAddLT = Button(
             self.frLista, 
             text='Registar Local', 
-            command=lambda: self.chamarInsercaoTL(1),
+            command=lambda: self.chamarInsercaoTL(0),
             width=10
         )
         btnAddLT.pack(pady=5)
@@ -440,14 +440,14 @@ class JanelaUsuarioAdm():
             self.nomes.append(Label(
                 self.listFr[i],
                 bg='gray',
-                text=item[2]
+                text=item.nome
             ))
             self.nomes[i].pack(side='left', padx=7)
 
             self.btnsExcluir.append(Button(
                 self.listFr[i],
                 text='Excluir',
-                command=lambda i=i, id=item[0]: self.chamarApagaLT(i, id),
+                command=lambda i=i, id=item.id: self.chamarApagaLT(i, id),
                 width=7
             ))
             self.btnsExcluir[i].pack(side='right')
@@ -478,14 +478,14 @@ class JanelaUsuarioAdm():
             self.nomes.append(Label(
                 self.listFr[i],
                 bg='gray',
-                text=item[2]
+                text=item.nome
             ))
             self.nomes[i].pack(side='left', padx=7)
 
             self.btnsExcluir.append(Button(
                 self.listFr[i],
                 text='Excluir',
-                command=lambda i=i, id=item[0]: self.chamarApagaAtr(i, id),
+                command=lambda i=i, id=item.id: self.chamarApagaAtr(i, id),
                 width=7
             ))
             self.btnsExcluir[i].pack(side='right')

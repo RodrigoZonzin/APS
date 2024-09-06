@@ -1,7 +1,15 @@
+from . import DAO as d
 import sqlite3
-import model.AtracaoTuristica import AtracaoTuristica *
+from model.AtracaoTuristica import AtracaoTuristica 
 
-class DAOAtracao:
+class DAOAtracao(d.DAO):
+    __instance = None
+    def __new__(cls):
+        if DAOAtracao.__instance is None:
+            DAOAtracao.__instance = super().__new__(cls)
+            DAOAtracao.__instance._initialized = True 
+        return DAOAtracao.__instance
+    
     def __init__(self):
         super().__init__()
 
@@ -26,37 +34,89 @@ class DAOAtracao:
 
     def insere_atracao(self, atracao: AtracaoTuristica) -> bool:
         try:
-            dados = (atracao.get_nome(),
-                     atracao.get_descricao(),
-                     atracao.get_endereco())
-
-            self.bd.execute("""
-                INSERT INTO ATRACAO (nome, descricao, endereco)
-                VALUES (?, ?, ?)
-            """, dados)
-
+            dados = (
+                1,
+                atracao.nome,
+                atracao.endereco,
+                atracao.descricao
+            )
+            print('atr:', dados)
+            self.bd.execute(
+                "INSERT INTO LOCALT_ATRAC(isLT_Atr, nome, endereco, descricao) VALUES (?, ?, ?, ?)",
+                dados
+            )
             self.commit()
             return True
+        except sqlite3.IntegrityError as e:
+            print(f"ERROR de integridade: {e}")
+            return False
+        except Exception as e:
+            print(f"ERROR ao inserir local: {e}")
+            return False
 
         except Exception as e:
             print(f"Erro inserindo Atracao Turistica: {e}")
             return False
 
-    #retorna uma lista de objetos atracao [Atracao1, ..., AtracaoN]
-    def seleciona_todas_atracoes() -> list:
+    def procura_atracao_turistica_por_id(self, id: int):
         try:
-            res = self.cur.execute ("SELECT * FROM ATRACAO")
-            res = res.fetchall(); 
-
-            atracoes = []
-            for atracao in res: 
-                atracoes.append(AtracaoTuristica(
-                    id = atracao[0],
-                    nome = atracao[1],
-                    endereco = atracao[2],
-                    descricao = atracao[3]
-                ))
-            
-            return atracoes
-        except:
+            res = self.cur.execute(f"""
+                SELECT * 
+                FROM LOCALT_ATRAC
+                WHERE id = {id}
+            """)
+            resposta = res.fetchone()
+            if resposta:
+                return AtracaoTuristica(id=resposta[0], nome=resposta[2], endereco=resposta[3], descricao=resposta[4])
+            else:
+                return False
+        except Exception as e:
+            print(f'ERROR ao procurar local por ID: {e}')
             return False
+
+    # Retorna um objeto LocalTuristico a partir do nome
+    def procura_atracao_turistica_por_nome(self, nome: str):
+        try:
+            res = self.cur.execute(f"""
+                SELECT * 
+                FROM LOCALT_ATRAC 
+                WHERE nome = '{nome}';
+            """)
+            resposta = res.fetchone()
+            if resposta:
+                return AtracaoTuristica(id=resposta[0], nome=resposta[2], endereco=resposta[3], descricao=resposta[4])
+            else:
+                return False
+        except Exception as e:
+            print(f'ERROR ao procurar local por nome: {e}')
+            return False
+
+    def exclui_atracao_turistica(self, id: int) -> bool: 
+        try:
+            self.bd.execute(f"""
+                DELETE FROM LOCALT_ATRAC
+                WHERE id = {id}
+            """)
+            self.commit()
+            return True
+        except Exception as e:
+            print(f'ERROR ao excluir local: {e}')
+            return False
+
+    #retorna uma lista de objetos atracao [Atracao1, ..., AtracaoN]
+    def seleciona_todas_atracoes(self) -> list:
+        try:
+            res = self.cur.execute("""
+                SELECT * 
+                FROM LOCALT_ATRAC
+                WHERE isLT_Atr = 1;
+            """)
+            resposta = res.fetchall()
+            locais = []
+            for local in resposta:
+                locais.append(AtracaoTuristica(id=local[0], nome=local[2], endereco=local[3], descricao=local[4]))
+            
+            return locais
+        except Exception as e:
+            print(f'ERROR ao retornar todos os locais: {e}')
+            return []

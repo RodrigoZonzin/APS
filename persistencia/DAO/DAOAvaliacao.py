@@ -188,6 +188,19 @@ class DAOAvaliacao(d.DAO):
             print(f'ERROR ao excluir avaliacoes do usuario: {e}')
             return False
 
+    def exclui_todasAval_localAtr(self, id_atr):
+        try:
+            self.bd.execute(f"""
+                DELETE FROM AVALIACAO
+                WHERE id_localAtr = {id_atr}
+                """)
+            self.bd.commit()
+            print(f'Todas as avaliacoes do {id_atr} foram apagadas')
+            return True
+        except Exception as e:
+            print(f'ERROR ao apagar avaliacoes: {e}')
+            return False
+
     def recupera_todas_avaliacoes_usuario(self, login):
         try:
             resposta = self.cur.execute(f"""

@@ -43,18 +43,12 @@ class AvaliacaoController:
             lt = None
 
             user = controlU.buscar_usuario(i[4])
-            # user = controlU.criaUser(aux, 0)
-            # if aux[4] == 0:
-            #     user = UsuarioNormal(aux[0], aux[1], aux[2], aux[3], aux[4])
-            # else:
-            #     user = UsuarioAdm(aux[0], aux[1], aux[2], aux[3], aux[4])
-            
-            aux = controlLt.procuraLocalPorNome(i[5])
-            if aux != False:
-                if aux[1] == 0:
-                    lt = LocalTuristico(aux[0], aux[2], aux[3], aux[4])
-                else:
-                    lt = AtracaoTuristica(aux[0], aux[2], aux[3], aux[4])
+            lt = controlLt.procuraLocalPorNome(i[5])
+            # if aux != False:
+            #     if aux[1] == 0:
+            #         lt = LocalTuristico(aux[0], aux[2], aux[3], aux[4])
+            #     else:
+            #         lt = AtracaoTuristica(aux[0], aux[2], aux[3], aux[4])
 
             #Fazer controle de erros nessa parte
             vet.append(Avaliacao(
